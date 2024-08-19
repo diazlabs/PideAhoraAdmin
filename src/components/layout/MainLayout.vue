@@ -5,10 +5,8 @@ import AppSidebar from './AppSidebar.vue'
 </script>
 
 <template>
-  <AppMenu>
-    <p></p>
-  </AppMenu>
+  <AppMenu />
   <AppSidebar />
-  <slot></slot>
+  <slot />
   <AppFooter />
 </template>

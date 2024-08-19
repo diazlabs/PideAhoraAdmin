@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { RouterView } from 'vue-router'
+import MainLayout from './components/layout/MainLayout.vue'
 
 const isAuth = true
 </script>
