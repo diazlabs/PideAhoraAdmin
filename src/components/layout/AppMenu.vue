@@ -1,10 +1,13 @@
 <script setup lang="ts">
+import { useLayoutStore } from '@/stores/layout'
 import Menubar from 'primevue/menubar'
 import type { MenuItem } from 'primevue/menuitem'
 
+const layout = useLayoutStore()
+
 const items: MenuItem[] = [
   {
-    label: 'Tiendas',
+    label: 'My tenant',
     items: [
       {
         label: 'Productos',
@@ -34,7 +37,8 @@ const items: MenuItem[] = [
 <template>
   <Menubar :model="items" class="rounded-none">
     <template #start>
-      <svg
+      <Button icon="pi pi-bars" @click="layout.openSidebar" />
+      <!--       <svg
         width="35"
         height="40"
         viewBox="0 0 35 40"
@@ -44,7 +48,7 @@ const items: MenuItem[] = [
       >
         <path d="..." fill="var(--p-primary-color)" />
         <path d="..." fill="var(--p-text-color)" />
-      </svg>
+      </svg> -->
     </template>
     <template #item="{ item, props, hasSubmenu, root }">
       <a v-ripple class="flex items-center" v-bind="props.action">

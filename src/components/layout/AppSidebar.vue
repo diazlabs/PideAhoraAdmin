@@ -2,10 +2,11 @@
 import Button from 'primevue/button'
 import Drawer from 'primevue/drawer'
 import type { MenuItem } from 'primevue/menuitem'
-import { ref } from 'vue'
 import MenuList from './MenuList.vue'
+import { useLayoutStore } from '@/stores/layout'
 
-const visible = ref(false)
+const layout = useLayoutStore()
+
 const items: MenuItem[] = [
   {
     label: 'Tiendas',
@@ -54,7 +55,7 @@ const items: MenuItem[] = [
 </script>
 
 <template>
-  <Drawer v-model:visible="visible">
+  <Drawer v-model:visible="layout.isSidebarOpen">
     <template #container="{ closeCallback }">
       <div class="flex flex-col h-full">
         <div class="flex items-center justify-between px-6 pt-4 shrink-0">
@@ -80,7 +81,12 @@ const items: MenuItem[] = [
           <span>
             <Button
               type="button"
-              @click="closeCallback"
+              @click="
+                () => {
+                  closeCallback()
+                  layout.closeSidebar()
+                }
+              "
               icon="pi pi-times"
               rounded
               outlined
@@ -105,5 +111,4 @@ const items: MenuItem[] = [
       </div>
     </template>
   </Drawer>
-  <Button icon="pi pi-bars" @click="visible = true" />
 </template>
