@@ -3,3 +3,12 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+body {
+  background-color: var(--p-surface-100);
+  min-height: 100vh;
+}
+
+body:where(.dark, .dark *) {
+  background-color: var(--p-surface-950);
+}

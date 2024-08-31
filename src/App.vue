@@ -2,7 +2,7 @@
 import { RouterView } from 'vue-router'
 import MainLayout from './components/layout/MainLayout.vue'
 
-const isAuth = true
+const isAuth = false
 </script>
 
 <template>

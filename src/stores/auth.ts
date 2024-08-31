@@ -3,13 +3,19 @@ import { defineStore } from 'pinia'
 
 export const useAuthStore = defineStore('auth', () => {
   const isAuth = ref(false)
+
   function logout() {
     isAuth.value = false
   }
 
-  function login() {
+  function login(jwtToken: string) {
     isAuth.value = true
+    localStorage.setItem('token', jwtToken)
   }
 
-  return { isAuth, logout, login }
+  function getToken() {
+    return localStorage.getItem('token')
+  }
+
+  return { isAuth, logout, login, getToken }
 })
