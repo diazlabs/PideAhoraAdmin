@@ -42,7 +42,8 @@ const { isPending, mutate: login } = useMutation({
   mutationFn: (request: LoginRequest) => AuthService.Login(request),
   onSuccess(response) {
     if (response.ok) {
-      authStore.login(response.data!)
+      authStore.login(response.data!.token)
+      window.location.replace(localStorage.returnUrl || '/')
       return
     }
 

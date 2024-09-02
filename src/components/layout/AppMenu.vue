@@ -2,8 +2,10 @@
 import { useLayoutStore } from '@/stores/layout'
 import Menubar from 'primevue/menubar'
 import type { MenuItem } from 'primevue/menuitem'
+import { storeToRefs } from 'pinia'
 
-const layout = useLayoutStore()
+const themeStore = useLayoutStore()
+const { theme } = storeToRefs(themeStore)
 
 const items: MenuItem[] = [
   {
@@ -37,7 +39,7 @@ const items: MenuItem[] = [
 <template>
   <Menubar :model="items" class="rounded-none">
     <template #start>
-      <Button icon="pi pi-bars" @click="layout.openSidebar" />
+      <Button icon="pi pi-bars" @click="themeStore.openSidebar" />
       <!--       <svg
         width="35"
         height="40"
@@ -70,9 +72,12 @@ const items: MenuItem[] = [
       </a>
     </template>
     <template #end>
-      <div class="flex items-center gap-2">
+      <div class="flex items-center gap-2 lg:mr-32">
         <InputText placeholder="Search" type="text" class="w-32 sm:w-auto" />
         <Avatar image="/images/avatar/amyelsner.png" shape="circle" />
+        <button type="button" class="dark:text-white" @:click="themeStore.changeTheme">
+          <i :class="`pi pi-${theme === 'dark' ? 'moon' : 'sun'}`"></i>
+        </button>
       </div>
     </template>
   </Menubar>

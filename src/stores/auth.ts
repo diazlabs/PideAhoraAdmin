@@ -2,7 +2,8 @@ import { ref } from 'vue'
 import { defineStore } from 'pinia'
 
 export const useAuthStore = defineStore('auth', () => {
-  const isAuth = ref(false)
+  const token = localStorage.getItem('token')
+  const isAuth = ref(token !== null)
 
   function logout() {
     isAuth.value = false
@@ -17,5 +18,9 @@ export const useAuthStore = defineStore('auth', () => {
     return localStorage.getItem('token')
   }
 
-  return { isAuth, logout, login, getToken }
+  function initializeLogin(isVerified: boolean) {
+    isAuth.value = isVerified
+  }
+
+  return { isAuth, logout, login, getToken, initializeLogin }
 })

@@ -6,6 +6,15 @@ const AxiosInstance = axios.create({
   baseURL: API_BASE_URL
 })
 
+AxiosInstance.interceptors.request.use(function (config) {
+  const token = localStorage.getItem('token')
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`
+  }
+
+  return config
+})
+
 AxiosInstance.interceptors.response.use(
   (response) => {
     return response
@@ -13,6 +22,7 @@ AxiosInstance.interceptors.response.use(
   (error) => {
     if (error.response?.status === 401) {
       window.location.replace('/auth/login')
+      return
     }
     throw error
   }
