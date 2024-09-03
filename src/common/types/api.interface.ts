@@ -10,3 +10,10 @@ interface ValidationError {
 }
 
 export type GeneralErrorsType = string[] | null | undefined
+
+export interface Audit {
+  creator: string
+  createdAt: Date
+  modifier?: string
+  updatedAt?: Date
+}
