@@ -8,7 +8,8 @@ import type {
   LoginRequest,
   LoginResponse,
   RegisterRequest,
-  RegisterResponse
+  RegisterResponse,
+  ResetPasswordRequest
 } from '../types/auth.interface'
 
 export default class AuthService {
@@ -62,17 +63,9 @@ export default class AuthService {
     }
   }
 
-  static async ResetPassword(
-    token: string,
-    password: string,
-    email: string
-  ): Promise<ApiResponse<null>> {
+  static async ResetPassword(request: ResetPasswordRequest): Promise<ApiResponse<null>> {
     try {
-      const response = await AxiosInstance.post<ApiResponse<null>>('/auth/reset-password', {
-        token,
-        password,
-        email
-      })
+      const response = await AxiosInstance.post<ApiResponse<null>>('/auth/reset-password', request)
 
       return response.data
     } catch (error) {

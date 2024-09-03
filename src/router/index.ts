@@ -1,8 +1,9 @@
-import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 import LoginView from '@/views/auth/LoginView.vue'
+import ForgotPasswordView from '@/views/auth/ForgotPasswordView.vue'
+
+import { createRouter, createWebHistory } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
-import { storeToRefs } from 'pinia'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -50,7 +51,39 @@ const router = createRouter({
     {
       path: '/auth/login',
       name: 'login',
-      component: LoginView
+      component: LoginView,
+      meta: {
+        isPublic: true
+      }
+    },
+    {
+      path: '/auth/Register',
+      name: 'register',
+      component: () => import('../views/auth/RegisterView.vue'),
+      meta: {
+        isPublic: true
+      }
+    },
+    {
+      path: '/auth/reset-password',
+      component: () => import('../views/auth/ResetPasswordView.vue'),
+      meta: {
+        isPublic: true
+      }
+    },
+    {
+      path: '/auth/forgot-password',
+      component: ForgotPasswordView,
+      meta: {
+        isPublic: true
+      }
+    },
+    {
+      path: '/auth/change-password',
+      component: () => import('../views/auth/ChangePasswordView.vue'),
+      meta: {
+        requiresAuth: true
+      }
     }
   ]
 })
@@ -63,7 +96,7 @@ router.beforeEach(async (to, from, next) => {
     return next({ name: 'login' })
   }
 
-  if (isAuth && to.name === 'login') {
+  if (isAuth && to.meta.isPublic) {
     return next({ name: 'home' })
   }
 

@@ -25,3 +25,9 @@ export interface ChangePasswordRequest {
 }
 
 export interface ChangePasswordResponse {}
+
+export interface ResetPasswordRequest {
+  token: string
+  password: string
+  email: string
+}
