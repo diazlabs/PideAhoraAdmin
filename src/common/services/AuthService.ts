@@ -5,6 +5,7 @@ import { type ApiResponse } from '../types/api.interface'
 import type {
   ChangePasswordRequest,
   ChangePasswordResponse,
+  Country,
   LoginRequest,
   LoginResponse,
   RegisterRequest,
@@ -53,9 +54,7 @@ export default class AuthService {
 
   static async SendResetPassword(email: string): Promise<ApiResponse<null>> {
     try {
-      const response = await AxiosInstance.post<ApiResponse<null>>('/auth/send-reset-password', {
-        email
-      })
+      const response = await AxiosInstance.get<ApiResponse<null>>(`/auth/send-reset-password?email=${email}`)
 
       return response.data
     } catch (error) {
@@ -66,6 +65,16 @@ export default class AuthService {
   static async ResetPassword(request: ResetPasswordRequest): Promise<ApiResponse<null>> {
     try {
       const response = await AxiosInstance.post<ApiResponse<null>>('/auth/reset-password', request)
+
+      return response.data
+    } catch (error) {
+      return handleHttpError(error)
+    }
+  }
+
+  static async GetCountries(): Promise<ApiResponse<Country[]>> {
+    try {
+      const response = await AxiosInstance.get<ApiResponse<Country[]>>('/auth/countries')
 
       return response.data
     } catch (error) {

@@ -2,6 +2,7 @@ import { createApp } from 'vue'
 import { createPinia } from 'pinia'
 import PrimeVue from 'primevue/config'
 import ThemePresets from '@/presets/aura'
+import ToastService from 'primevue/toastservice';
 import './assets/style.css'
 import 'primeicons/primeicons.css'
 
@@ -14,9 +15,11 @@ app.use(PrimeVue, {
   unstyled: true,
   pt: ThemePresets
 })
+app.use(ToastService);
 
 app.use(createPinia())
 app.use(router)
 app.use(VueQueryPlugin)
+
 
 app.mount('#app')

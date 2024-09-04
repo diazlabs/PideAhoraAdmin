@@ -6,6 +6,7 @@ export interface CreateTenantRequest {
   path: string
   description: string
   category: string
+  logo: File
 }
 
 export interface CreateTenantResponse {
@@ -24,6 +25,7 @@ export interface UpdateTenantRequest {
   path: string
   description: string
   category: string
+  logo?: File
 }
 
 export interface UpdateTenantResponse {}
@@ -41,4 +43,8 @@ export interface TenantById extends Audit {
 
 export interface Tenants {
   tenants: TenantById[]
+}
+
+export interface TenantCategory {
+  name: string
 }

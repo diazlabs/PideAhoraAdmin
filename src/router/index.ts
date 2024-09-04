@@ -4,6 +4,7 @@ import ForgotPasswordView from '@/views/auth/ForgotPasswordView.vue'
 
 import { createRouter, createWebHistory } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
+import NotFoundView from '@/views/NotFoundView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -49,6 +50,20 @@ const router = createRouter({
       }
     },
     {
+      path: '/tenant/create-tenant',
+      component: () => import('../views/tenant/CreateTenantView.vue'),
+      meta: {
+        requiresAuth: true
+      }
+    },
+    {
+      path: '/tenant/:id',
+      component: () => import('../views/tenant/UpdateTenantView.vue'),
+      meta: {
+        requiresAuth: true
+      }
+    },
+    {
       path: '/auth/login',
       name: 'login',
       component: LoginView,
@@ -57,7 +72,7 @@ const router = createRouter({
       }
     },
     {
-      path: '/auth/Register',
+      path: '/auth/register',
       name: 'register',
       component: () => import('../views/auth/RegisterView.vue'),
       meta: {
@@ -84,7 +99,8 @@ const router = createRouter({
       meta: {
         requiresAuth: true
       }
-    }
+    },
+    { path: '/:pathMatch(.*)*', name: 'NotFound', component: NotFoundView },
   ]
 })
 

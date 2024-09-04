@@ -12,7 +12,7 @@ export interface RegisterRequest {
   lastName: string
   email: string
   password: string
-  phoneNumber: number
+  phoneNumber: string
   country: string
 }
 
@@ -30,4 +30,11 @@ export interface ResetPasswordRequest {
   token: string
   password: string
   email: string
+}
+
+export interface Country {
+  name: string
+  code: string
+  prefix: string
+  mask: string
 }

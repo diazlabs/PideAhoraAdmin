@@ -12,10 +12,7 @@ import type {
 } from '../types/tenant.interface'
 
 export default class TenantService {
-  static async Create(
-    tenant: CreateTenantRequest,
-    logo: File
-  ): Promise<ApiResponse<CreateTenantResponse>> {
+  static async Create(tenant: CreateTenantRequest): Promise<ApiResponse<CreateTenantResponse>> {
     try {
       const request = new FormData()
 
@@ -24,7 +21,7 @@ export default class TenantService {
       request.append('path', tenant.path)
       request.append('description', tenant.description)
       request.append('category', tenant.category)
-      request.append('logo', logo)
+      request.append('logo', tenant.logo)
 
       const response = await AxiosInstance.post<ApiResponse<CreateTenantResponse>>(
         '/admin/tenants',
@@ -37,10 +34,7 @@ export default class TenantService {
     }
   }
 
-  static async Update(
-    tenant: UpdateTenantRequest,
-    logo?: File
-  ): Promise<ApiResponse<UpdateTenantResponse>> {
+  static async Update(tenant: UpdateTenantRequest): Promise<ApiResponse<UpdateTenantResponse>> {
     try {
       const request = new FormData()
 
@@ -50,7 +44,7 @@ export default class TenantService {
       request.append('description', tenant.description)
       request.append('category', tenant.category)
 
-      if (logo) request.append('logo', logo)
+      if (tenant.logo) request.append('logo', tenant.logo)
 
       const response = await AxiosInstance.put<ApiResponse<UpdateTenantResponse>>(
         `/admin/tenants/${tenant.tenantId}`,
@@ -73,7 +67,7 @@ export default class TenantService {
     }
   }
 
-  static async GetById(tenantId: string) {
+  static async GetById(tenantId: string): Promise<ApiResponse<TenantById>> {
     try {
       const response = await AxiosInstance.get<ApiResponse<TenantById>>(
         `/admin/tenants/${tenantId}`
@@ -88,6 +82,16 @@ export default class TenantService {
   static async GetAll() {
     try {
       const response = await AxiosInstance.get<ApiResponse<Tenants>>(`/admin/tenants/`)
+
+      return response.data
+    } catch (error) {
+      return handleHttpError(error)
+    }
+  }
+
+  static async GetCategories(): Promise<ApiResponse<string[]>> {
+    try {
+      const response = await AxiosInstance.get<ApiResponse<string[]>>(`/tenants/categories`)
 
       return response.data
     } catch (error) {

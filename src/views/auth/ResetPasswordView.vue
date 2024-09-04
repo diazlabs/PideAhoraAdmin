@@ -17,6 +17,7 @@ import type { GeneralErrorsType } from '@/common/types/api.interface'
 import type { ResetPasswordRequest } from '@/common/types/auth.interface'
 import { passwordRegex } from '@/common/utils/regexes'
 import router from '@/router'
+import { useToast } from 'primevue/usetoast'
 
 const email = router.currentRoute.value.query.email as string
 const token = router.currentRoute.value.query.token as string
@@ -44,10 +45,15 @@ const [password] = defineField('password')
 
 const generalErrors = ref<GeneralErrorsType>(null)
 
+const toast = useToast()
+
 const { isPending, mutate: resetPasword } = useMutation({
   mutationFn: (request: ResetPasswordRequest) => AuthService.ResetPassword(request),
   onSuccess(response) {
     if (response.ok) {
+      toast.add({ severity: 'success', summary: 'Contraseña restablecida', detail: 'Tu contraseña ha sido restablecida con éxito', life: 5000 })
+      router.push({ name: 'login' })  
+      generalErrors.value = null
       return
     }
 
@@ -64,7 +70,7 @@ const onSubmit = handleSubmit(({ password }) => {
   resetPasword({
     password,
     email,
-    token
+    token: token.replace(/\s+/g, "+")
   })
 })
 </script>
@@ -95,7 +101,7 @@ const onSubmit = handleSubmit(({ password }) => {
       </template>
       <template #footer>
         <div class="flex items-center justify-end">
-          <Button as="a" label="Cancelar" severity="warn" @click="router.go(-1)" />
+          <Button as="router-link" label="Cancelar" severity="warn" to="/auth/login" />
         </div>
       </template>
     </Card>

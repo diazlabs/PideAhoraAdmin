@@ -70,6 +70,7 @@ const onSubmit = handleSubmit((request) => {
       <template #content>
         <form @submit.prevent="onSubmit">
           <AppInputGroup
+            :input-props="{ autocomplete: 'username' }"
             label="Email"
             id="email"
             name="email"
@@ -95,7 +96,7 @@ const onSubmit = handleSubmit((request) => {
       <template #footer>
         <p class="flex items-center">
           ¿Olvidate tu contraseña?
-          <Button as="a" label="Restablecer" link href="/auth/forgot-password" />
+          <Button as="router-link" label="Restablecer" link to="/auth/forgot-password" />
         </p>
       </template>
     </Card>

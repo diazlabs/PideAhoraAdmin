@@ -1,14 +1,15 @@
 <script setup lang="ts">
 import { useField } from 'vee-validate'
-import type { InputTypeHTMLAttribute } from 'vue'
+import type { InputHTMLAttributes, InputTypeHTMLAttribute } from 'vue'
 
+type InputAttributes = Omit<InputHTMLAttributes, 'size'>
 interface Props {
   label: string
   icon?: string
   type?: InputTypeHTMLAttribute
   placeholder?: string
   name: string
-  inputProps?: HTMLInputElement
+  inputProps?: Partial<InputAttributes>
 }
 
 const props = defineProps<Props>()
@@ -32,7 +33,7 @@ const { errors, value } = useField(() => props.name)
           v-model="value as string"
           :type="type ?? 'text'"
           :name="name"
-          :inputProps="inputProps"
+          v-bind="inputProps"
           :invalid="errors.length > 0"
         />
       </slot>

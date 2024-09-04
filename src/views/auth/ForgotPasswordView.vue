@@ -13,6 +13,8 @@ import * as zod from 'zod'
 import { useMutation } from '@tanstack/vue-query'
 
 import type { GeneralErrorsType } from '@/common/types/api.interface'
+import { useToast } from 'primevue/usetoast'
+import { RouterLink } from 'vue-router'
 
 const validationSchema = toTypedSchema(
   zod.object({
@@ -26,12 +28,21 @@ const { handleSubmit, setErrors } = useForm({
   validationSchema
 })
 
+const toast = useToast()
+
 const generalErrors = ref<GeneralErrorsType>(null)
 
 const { isPending, mutate: sendResetPassword } = useMutation({
   mutationFn: (email: string) => AuthService.SendResetPassword(email),
   onSuccess(response) {
     if (response.ok) {
+      toast.add({
+        severity: 'info',
+        summary: 'Correo enviado',
+        detail: 'Se ha enviado un correo con las instrucciones para restablecer tu contraseña',
+        life: 5000,
+        closable: true
+      })
       return
     }
 
@@ -64,14 +75,14 @@ const onSubmit = handleSubmit(({ email }) => {
             icon="pi-user"
             placeholder="johndoe@example.com"
           />
-          <Button type="submit" :disabled="isPending" class="w-full mb-5">Enviar correo</Button>
+          <Button type="submit" :disabled="isPending" class="w-full mb-5">Enviar</Button>
           <GeneralErrors :generalErrors="generalErrors" />
         </form>
       </template>
       <template #footer>
-        <p class="flex items-center">
-          <Button as="a" label="Iniciar sesión" link href="/auth/forgot-password" />
-        </p>
+        <div class="flex items-center">
+          <Button as="router-link" label="Iniciar sesión" link to="/auth/login" />
+        </div>
       </template>
     </Card>
   </div>
