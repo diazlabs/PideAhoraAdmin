@@ -10,6 +10,7 @@ export interface CreateTenantRequest {
 }
 
 export interface CreateTenantResponse {
+  tenantId: string
   name: string
   pageTitle: string
   path: string
@@ -31,6 +32,7 @@ export interface UpdateTenantRequest {
 export interface UpdateTenantResponse {}
 
 export interface TenantById extends Audit {
+  tenantId: string
   name: string
   pageTitle: string
   path: string
@@ -42,9 +44,17 @@ export interface TenantById extends Audit {
 }
 
 export interface Tenants {
-  tenants: TenantById[]
+  tenantId: string
+  userId: string
+  path: string
+  name: string
+  pageTitle: string
+  description: string
+  logo: string
+  category: string
 }
 
 export interface TenantCategory {
   name: string
+  code: string
 }

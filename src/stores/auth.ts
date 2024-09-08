@@ -1,11 +1,12 @@
 import { ref } from 'vue'
 import { defineStore } from 'pinia'
-import { jwtDecode } from 'jwt-decode'
+import { jwtDecode, type JwtPayload } from 'jwt-decode'
 import router from '@/router'
 
 export const useAuthStore = defineStore('auth', () => {
   const tokenExpiration = ref<number>()
   const isAuth = ref(false)
+  const isAdmin = ref(false)
 
   const token = localStorage.getItem('token')
 
@@ -31,6 +32,7 @@ export const useAuthStore = defineStore('auth', () => {
 
   function login(jwtToken: string) {
     isAuth.value = true
+    isAdmin.value = jwtDecode<TokenClaims>(jwtToken).role?.includes('admin') || false
     localStorage.setItem('token', jwtToken)
   }
 
@@ -42,5 +44,14 @@ export const useAuthStore = defineStore('auth', () => {
     isAuth.value = isVerified
   }
 
-  return { isAuth, logout, login, getToken, initializeLogin, tokenExpiration }
+  return { isAuth, logout, login, getToken, initializeLogin, tokenExpiration, isAdmin }
 })
+
+interface TokenClaims extends JwtPayload {
+  id?: string
+  role?: string
+  tenant?: string
+  email: string
+  name: string
+  family_name: string
+}

@@ -3,19 +3,20 @@ import { useQuery } from '@tanstack/vue-query'
 import RegisterForm from './components/RegisterForm.vue'
 import AuthService from '@/common/services/AuthService'
 
-const categoriesQuery = useQuery({
+const countriesQuery = useQuery({
   queryKey: ['get-countries'],
-  queryFn: () => AuthService.GetCountries()
+  queryFn: () => AuthService.GetCountries(),
+  refetchOnWindowFocus: false
 })
 </script>
 
 <template>
-  <template v-if="categoriesQuery.isSuccess && categoriesQuery.data?.value?.data">
-    <RegisterForm :countries="categoriesQuery.data.value.data" />
+  <template v-if="countriesQuery.isSuccess && countriesQuery.data?.value?.data">
+    <RegisterForm :countries="countriesQuery.data.value.data" />
   </template>
-  <template v-else-if="categoriesQuery.isError && !categoriesQuery.isFetching">
+  <template v-else-if="countriesQuery.isError && !countriesQuery.isFetching">
     <div class="flex items-center justify-center min-h-screen">
-      <p>{{ categoriesQuery.data.value?.generalErrors }}</p>
+      <p>{{ countriesQuery.data.value?.generalErrors }}</p>
     </div>
   </template>
   <template v-else>

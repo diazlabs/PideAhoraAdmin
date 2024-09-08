@@ -6,9 +6,11 @@
 
 body {
   background-color: var(--p-surface-100);
+  color: var(--p-text-color);
   min-height: 100vh;
 }
 
 body:where(.dark, .dark *) {
   background-color: var(--p-surface-950);
+  color: var(--p-surface-50);
 }

@@ -3,33 +3,21 @@ import { useLayoutStore } from '@/stores/layout'
 import Menubar from 'primevue/menubar'
 import type { MenuItem } from 'primevue/menuitem'
 import { storeToRefs } from 'pinia'
+import { useAuthStore } from '@/stores/auth'
+import { RouterLink } from 'vue-router'
 
 const themeStore = useLayoutStore()
+const authStore = useAuthStore()
+
 const { theme } = storeToRefs(themeStore)
 
 const items: MenuItem[] = [
   {
-    label: 'My tenant',
+    label: 'Admin',
     items: [
       {
-        label: 'Productos',
-        url: '/products'
-      },
-      {
-        label: 'Secciones',
-        url: '/sections'
-      },
-      {
-        label: 'Theming',
-        url: '/theming'
-      },
-      {
-        label: 'Configuraciones',
-        url: '/configs'
-      },
-      {
-        label: 'Ordenes',
-        url: '/orders'
+        label: 'Crear tenant',
+        url: '/tenant/create-tenant'
       }
     ]
   }
@@ -37,7 +25,7 @@ const items: MenuItem[] = [
 </script>
 
 <template>
-  <Menubar :model="items" class="rounded-none">
+  <Menubar :model="items" class="rounded-none gap-10">
     <template #start>
       <Button icon="pi pi-bars" @click="themeStore.openSidebar" />
       <!--       <svg
@@ -53,9 +41,14 @@ const items: MenuItem[] = [
       </svg> -->
     </template>
     <template #item="{ item, props, hasSubmenu, root }">
-      <a v-ripple class="flex items-center" v-bind="props.action">
+      <a v-if="!authStore.isAdmin" v-ripple class="flex items-center" v-bind="props.action">
         <span :class="item.icon" />
-        <span :class="item.icon ? 'ml-2' : ''">{{ item.label }}</span>
+        <template v-if="item.url">
+          <RouterLink :to="item.url" :class="item.icon ? 'ml-2' : ''">{{ item.label }}</RouterLink>
+        </template>
+        <template v-else>
+          <a :class="item.icon ? 'ml-2' : ''">{{ item.label }}</a>
+        </template>
         <Badge v-if="item.badge" :class="{ 'ml-auto': !root, 'ml-2': root }" :value="item.badge" />
         <span
           v-if="item.shortcut"

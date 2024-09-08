@@ -57,7 +57,8 @@ const router = createRouter({
       }
     },
     {
-      path: '/tenant/:id',
+      name: 'tenant',
+      path: '/tenant/:tenantId',
       component: () => import('../views/tenant/UpdateTenantView.vue'),
       meta: {
         requiresAuth: true
@@ -100,7 +101,7 @@ const router = createRouter({
         requiresAuth: true
       }
     },
-    { path: '/:pathMatch(.*)*', name: 'NotFound', component: NotFoundView },
+    { path: '/:pathMatch(.*)*', name: 'NotFound', component: NotFoundView }
   ]
 })
 

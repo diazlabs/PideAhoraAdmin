@@ -7,19 +7,22 @@ import UpdateTenantForm from './components/UpdateTenantForm.vue'
 
 const route = useRoute()
 
-const tenantId = route.params.id as string
+const tenantId = route.params.tenantId as string
+
 if (!tenantId || tenantId.length < 35) {
   router.push({ path: '/not-found' })
 }
 
 const tenantQuery = useQuery({
-  queryKey: ['tenant-get-by-id', route.params.id],
-  queryFn: () => TenantService.GetById(route.params.id as string)
+  queryKey: ['tenant-get-by-id', tenantId],
+  queryFn: () => TenantService.GetById(tenantId),
+  refetchOnWindowFocus: false
 })
 
 const categoriesQuery = useQuery({
-  queryKey: ['v'],
-  queryFn: () => TenantService.GetCategories()
+  queryKey: ['tenant-categories'],
+  queryFn: () => TenantService.GetCategories(),
+  refetchOnWindowFocus: false
 })
 
 const { data: tenantData } = tenantQuery
@@ -45,7 +48,12 @@ const { data: tenantData } = tenantQuery
       :categories="categoriesQuery.data.value.data"
     />
   </template>
-  <template v-if="tenantQuery.isError || categoriesQuery.isError">
+  <template
+    v-if="
+      tenantQuery.isError ||
+      (categoriesQuery.isError && !categoriesQuery.isFetching && !tenantQuery.isFetching)
+    "
+  >
     <div class="flex items-center justify-center">
       <p>{{ tenantQuery.error?.value }}</p>
       <p>{{ categoriesQuery.error?.value }}</p>

@@ -1,57 +1,57 @@
 <script setup lang="ts">
 import Button from 'primevue/button'
 import Drawer from 'primevue/drawer'
-import type { MenuItem } from 'primevue/menuitem'
 import MenuList from './MenuList.vue'
 import { useLayoutStore } from '@/stores/layout'
+import TenantService from '../../common/services/TenantService'
+import { useQuery } from '@tanstack/vue-query'
+import { ref, watch } from 'vue'
 
 const layout = useLayoutStore()
 
-const items: MenuItem[] = [
-  {
-    label: 'Tiendas',
+const tenantsQuery = useQuery({
+  queryKey: ['tenants'],
+  queryFn: () => TenantService.GetAll(),
+  refetchOnWindowFocus: false
+})
+
+const items = ref()
+
+watch(tenantsQuery.isLoading, () => {
+  if (!tenantsQuery.isSuccess) {
+    items.value = createItems()
+  }
+})
+
+const createItems = () => {
+  let menuItems = tenantsQuery.data!.value!.data!.map((tenant) => ({
+    label: tenant.name,
     items: [
       {
         label: 'Productos',
-        items: [
-          {
-            label: 'Secciones',
-            items: [
-              {
-                label: 'Secciones',
-                url: '/sections'
-              },
-              {
-                label: 'Theming',
-                url: '/theming'
-              }
-            ]
-          },
-          {
-            label: 'Theming',
-            url: '/theming'
-          }
-        ]
+        url: `/products/${tenant.tenantId}`
       },
       {
         label: 'Secciones',
-        url: '/sections'
+        url: `/sections/${tenant.tenantId}`
       },
       {
         label: 'Theming',
-        url: '/theming'
+        url: `/theming/${tenant.tenantId}`
       },
       {
         label: 'Configuraciones',
-        url: '/configs'
+        url: `/configs/${tenant.tenantId}`
       },
       {
         label: 'Ordenes',
-        url: '/orders'
+        url: `/orders/${tenant.tenantId}`
       }
     ]
-  }
-]
+  }))
+
+  return menuItems
+}
 </script>
 
 <template>
@@ -94,7 +94,12 @@ const items: MenuItem[] = [
           </span>
         </div>
         <div class="overflow-y-auto">
-          <MenuList :items="items" />
+          <template v-if="tenantsQuery.isSuccess">
+            <MenuList :items="createItems()" />
+          </template>
+          <template v-else>
+            <ProgressSpinner />
+          </template>
         </div>
         <div class="mt-auto">
           <hr class="mb-4 mx-4 border-t border-0 border-surface-200 dark:border-surface-700" />

@@ -14,7 +14,6 @@ import { useMutation } from '@tanstack/vue-query'
 
 import type { GeneralErrorsType } from '@/common/types/api.interface'
 import { useToast } from 'primevue/usetoast'
-import { RouterLink } from 'vue-router'
 
 const validationSchema = toTypedSchema(
   zod.object({

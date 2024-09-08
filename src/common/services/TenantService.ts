@@ -6,6 +6,7 @@ import type {
   CreateTenantRequest,
   CreateTenantResponse,
   TenantById,
+  TenantCategory,
   Tenants,
   UpdateTenantRequest,
   UpdateTenantResponse
@@ -79,9 +80,9 @@ export default class TenantService {
     }
   }
 
-  static async GetAll() {
+  static async GetAll(): Promise<ApiResponse<Tenants[]>> {
     try {
-      const response = await AxiosInstance.get<ApiResponse<Tenants>>(`/admin/tenants/`)
+      const response = await AxiosInstance.get<ApiResponse<Tenants[]>>(`/admin/tenants/`)
 
       return response.data
     } catch (error) {
@@ -89,9 +90,9 @@ export default class TenantService {
     }
   }
 
-  static async GetCategories(): Promise<ApiResponse<string[]>> {
+  static async GetCategories(): Promise<ApiResponse<TenantCategory[]>> {
     try {
-      const response = await AxiosInstance.get<ApiResponse<string[]>>(`/tenants/categories`)
+      const response = await AxiosInstance.get<ApiResponse<TenantCategory[]>>(`/tenants/categories`)
 
       return response.data
     } catch (error) {
