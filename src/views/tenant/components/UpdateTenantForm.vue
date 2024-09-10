@@ -102,6 +102,11 @@ const { isPending, mutate: createTenant } = useMutation({
   }
 })
 
+const onSelectFile = (event: Event) => {
+  const target = event.target as HTMLInputElement
+  logo.value = target.files![0]
+}
+
 const onSubmit = handleSubmit((values) => {
   createTenant({ ...values, tenantId: props.tenantId })
 })
@@ -111,7 +116,7 @@ const onSubmit = handleSubmit((values) => {
   <div class="flex justify-center items-center min-h-screen p-5">
     <Card class="max-w-[400px] w-full">
       <template #title>
-        <h1 class="text-center">Crear tienda</h1>
+        <h1 class="text-center">Actualizar tienda</h1>
       </template>
       <template #content>
         <form @submit.prevent="onSubmit">
@@ -130,12 +135,14 @@ const onSubmit = handleSubmit((values) => {
           </AppInputGroup>
           <AppInputGroup label="Titulo de la pagina" id="pageTitle" name="pageTitle" />
           <AppInputGroup label="Logo" id="logo" name="logo">
-            <FileUpload
-              v-model="logo"
-              mode="basic"
+            <input
+              type="file"
               name="logo"
+              id="logo"
               :accept="ACCEPTED_IMAGE_TYPES.join(',')"
-              :maxFileSize="MAX_FILE_SIZE"
+              :max="MAX_FILE_SIZE"
+              multiple="false"
+              @change="onSelectFile"
             />
           </AppInputGroup>
           <Button type="submit" :disabled="isPending" class="w-full mb-5">Actualizar</Button>
