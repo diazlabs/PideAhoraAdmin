@@ -1,5 +1,5 @@
 <script setup lang="tsx">
-import { ref, watch } from 'vue'
+import { ref } from 'vue'
 
 import AppInputGroup from '@/components/Inputs/AppInputGroup.vue'
 import GeneralErrors from '@/components/Errors/GeneralErrors.vue'
@@ -12,42 +12,30 @@ import * as zod from 'zod'
 import { useMutation } from '@tanstack/vue-query'
 
 import type { GeneralErrorsType } from '@/common/types/api.interface'
-import type { TenantCategory, UpdateTenantRequest } from '@/common/types/tenant.interface'
-import TenantService from '../../../common/services/TenantService'
 import { ACCEPTED_IMAGE_TYPES, MAX_FILE_SIZE } from '@/common/constants/image'
 import { useToast } from 'primevue/usetoast'
 
-interface Props extends UpdateTenantRequest {
-  categories: TenantCategory[]
-  image: string
-}
+import TemplateService from '@/common/services/TemplateService'
+import type {
+  CreateTemplateRequest,
+  UpdateTemplateRequest
+} from '@/common/types/template.interface'
+
+interface Props extends UpdateTemplateRequest {}
 
 const props = defineProps<Props>()
 
 const validationSchema = toTypedSchema(
   zod.object({
-    pageTitle: zod
+    header: zod
       .string()
-      .max(30, { message: 'El titulo de la pagina no puede ser mayor a 30 caracteres' }),
-    path: zod
-      .string({ message: 'Debes ingresar el path que tendra tu tienda /mi-tienda' })
-      .min(2, { message: 'Debes ingresar el path que tendra tu tienda /' })
-      .max(30, { message: 'El path no puede ser mayor a 30 caracteres' }),
+      .max(30, { message: 'El nombre del template no puede ser mayor a 30 caracteres' }),
+    name: zod
+      .string()
+      .max(30, { message: 'El nombre del template no puede ser mayor a 30 caracteres' }),
     description: zod
       .string()
       .max(200, { message: 'La descripción no puede ser mayor a 200 caracteres' }),
-    category: zod.enum(
-      props.categories.length > 0
-        ? (props.categories.map((x) => x.code) as [string, ...string[]])
-        : ['default'],
-      { message: 'Debes seleccionar una categoria' }
-    ),
-    name: zod
-      .string()
-      .min(2, { message: 'El nombre de la tienda debe tener al menos 2 caracteres' })
-      .max(30, {
-        message: 'El nombre de la tienda no puede ser mayor a 30 caracteres'
-      }),
     logo: zod
       .any()
       .optional()
@@ -62,31 +50,25 @@ const validationSchema = toTypedSchema(
   })
 )
 
-const { handleSubmit, setErrors, defineField, setFieldValue } = useForm({
+const { handleSubmit, setErrors, defineField } = useForm({
   validationSchema,
-  initialValues: {
-    ...props
-  }
+  initialValues: { ...props }
 })
 
 const [logo] = defineField('logo')
-const category = ref<TenantCategory>(props.categories.find((x) => x.code === props.category)!)
-watch(category, () => {
-  setFieldValue('category', category.value!.code)
-})
 
 const generalErrors = ref<GeneralErrorsType>(null)
 
 const toast = useToast()
 
-const { isPending, mutate: createTenant } = useMutation({
-  mutationFn: (request: UpdateTenantRequest) => TenantService.Update(request),
+const { isPending, mutate: createTemplate } = useMutation({
+  mutationFn: (request: CreateTemplateRequest) => TemplateService.Create(request),
   onSuccess(response) {
     if (response.ok) {
       toast.add({
         severity: 'success',
-        summary: 'Actualización exitosa',
-        detail: 'Se ha actualizado el tenant correctamente',
+        summary: 'Creado exitosamente',
+        detail: 'Se ha creado el template correctamente',
         life: 5000,
         closable: true
       })
@@ -108,7 +90,7 @@ const onSelectFile = (event: Event) => {
 }
 
 const onSubmit = handleSubmit((values) => {
-  createTenant({ ...values, tenantId: props.tenantId })
+  createTemplate({ ...values, tenantId: props.tenantId })
 })
 </script>
 
@@ -116,24 +98,13 @@ const onSubmit = handleSubmit((values) => {
   <div class="flex justify-center items-center min-h-screen p-5">
     <Card class="max-w-[400px] w-full">
       <template #title>
-        <h1 class="text-center">Actualizar tienda</h1>
+        <h1 class="text-center">Crear template</h1>
       </template>
       <template #content>
         <form @submit.prevent="onSubmit">
-          <AppInputGroup label="Nombre de la tienda" id="name" name="name" />
+          <AppInputGroup label="Nombre" id="name" name="name" />
+          <AppInputGroup label="Header" id="header" name="header" />
           <AppInputGroup label="Descripcion" id="description" name="description" />
-          <AppInputGroup label="Path" id="path" name="path" />
-          <AppInputGroup label="Categoria" id="category" name="category">
-            <Select
-              v-model="category"
-              :options="categories"
-              optionLabel="name"
-              id="category"
-              placeholder="Selecciona una categoria"
-              class="w-full"
-            />
-          </AppInputGroup>
-          <AppInputGroup label="Titulo de la pagina" id="pageTitle" name="pageTitle" />
           <AppInputGroup label="Logo" id="logo" name="logo">
             <input
               type="file"
@@ -145,7 +116,7 @@ const onSubmit = handleSubmit((values) => {
               @change="onSelectFile"
             />
           </AppInputGroup>
-          <Button type="submit" :disabled="isPending" class="w-full mb-5">Actualizar</Button>
+          <Button type="submit" :disabled="isPending" class="w-full mb-5">Crear</Button>
           <GeneralErrors :generalErrors="generalErrors" />
         </form>
       </template>

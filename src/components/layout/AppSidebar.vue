@@ -28,12 +28,16 @@ const createItems = () => {
     label: tenant.name,
     items: [
       {
+        label: 'Perfil de la tienda',
+        URL: `/tenant/${tenant.tenantId}`
+      },
+      {
         label: 'Productos',
         url: `/products/${tenant.tenantId}`
       },
       {
-        label: 'Secciones',
-        url: `/sections/${tenant.tenantId}`
+        label: 'Templates',
+        url: `/templates/${tenant.tenantId}`
       },
       {
         label: 'Theming',

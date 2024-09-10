@@ -13,15 +13,18 @@ import type {
 
 export default class TemplateService {
   static async Create(
-    template: CreateTemplateRequest,
-    logo: File
+    template: CreateTemplateRequest
   ): Promise<ApiResponse<CreateTemplateResponse>> {
     try {
       const request = new FormData()
 
       request.append('description', template.description)
       request.append('header', template.header)
-      request.append('logo', logo)
+      request.append('name', template.name)
+
+      if (template.logo) {
+        request.append('logo', template.logo)
+      }
 
       const response = await AxiosInstance.post<ApiResponse<CreateTemplateResponse>>(
         `/admin/templates/${template.tenantId}`,
@@ -69,7 +72,10 @@ export default class TemplateService {
     }
   }
 
-  static async GetById(tenantId: string, tenantTemplateId: string) {
+  static async GetById(
+    tenantId: string,
+    tenantTemplateId: string
+  ): Promise<ApiResponse<TemplateById>> {
     try {
       const response = await AxiosInstance.get<ApiResponse<TemplateById>>(
         `/admin/tenants/${tenantId}/${tenantTemplateId}`
