@@ -5,17 +5,14 @@ import type { ApiResponse } from '../types/api.interface'
 import type {
   CreateProductRequest,
   CreateProductResponse,
+  Product,
   ProductById,
-  Products,
   UpdateProductRequest,
   UpdateProductResponse
 } from '../types/product.interface'
 
 export default class ProductService {
-  static async Create(
-    product: CreateProductRequest,
-    image: File
-  ): Promise<ApiResponse<CreateProductResponse>> {
+  static async Create(product: CreateProductRequest): Promise<ApiResponse<CreateProductResponse>> {
     try {
       const request = new FormData()
 
@@ -23,7 +20,9 @@ export default class ProductService {
       request.append('productName', product.productName)
       request.append('productPrice', product.productPrice.toString())
       request.append('visible', `${product.visible}`)
-      request.append('image', image)
+      if (product.image) {
+        request.append('image', product.image)
+      }
 
       if (product.productDescription)
         request.append('productDescription', product.productDescription)
@@ -91,9 +90,9 @@ export default class ProductService {
     }
   }
 
-  static async GetAll() {
+  static async GetAll(tenantId: string): Promise<ApiResponse<Product[]>> {
     try {
-      const response = await AxiosInstance.get<ApiResponse<Products>>(`/admin/tenants/`)
+      const response = await AxiosInstance.get<ApiResponse<Product[]>>(`/products/${tenantId}`)
 
       return response.data
     } catch (error) {

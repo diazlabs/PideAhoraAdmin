@@ -54,7 +54,9 @@ export default class AuthService {
 
   static async SendResetPassword(email: string): Promise<ApiResponse<null>> {
     try {
-      const response = await AxiosInstance.get<ApiResponse<null>>(`/auth/send-reset-password?email=${email}`)
+      const response = await AxiosInstance.get<ApiResponse<null>>(
+        `/auth/send-reset-password?email=${email}`
+      )
 
       return response.data
     } catch (error) {

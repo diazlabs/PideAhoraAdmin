@@ -51,8 +51,13 @@ const { isPending, mutate: resetPasword } = useMutation({
   mutationFn: (request: ResetPasswordRequest) => AuthService.ResetPassword(request),
   onSuccess(response) {
     if (response.ok) {
-      toast.add({ severity: 'success', summary: 'Contraseña restablecida', detail: 'Tu contraseña ha sido restablecida con éxito', life: 5000 })
-      router.push({ name: 'login' })  
+      toast.add({
+        severity: 'success',
+        summary: 'Contraseña restablecida',
+        detail: 'Tu contraseña ha sido restablecida con éxito',
+        life: 5000
+      })
+      router.push({ name: 'login' })
       generalErrors.value = null
       return
     }
@@ -70,7 +75,7 @@ const onSubmit = handleSubmit(({ password }) => {
   resetPasword({
     password,
     email,
-    token: token.replace(/\s+/g, "+")
+    token: token.replace(/\s+/g, '+')
   })
 })
 </script>

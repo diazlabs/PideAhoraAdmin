@@ -1,10 +1,10 @@
-import HomeView from '../views/HomeView.vue'
-import LoginView from '@/views/auth/LoginView.vue'
-import ForgotPasswordView from '@/views/auth/ForgotPasswordView.vue'
+import HomeView from '../public/HomeView.vue'
+import LoginView from '@/public/auth/LoginView.vue'
+import ForgotPasswordView from '@/public/auth/ForgotPasswordView.vue'
 
 import { createRouter, createWebHistory } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
-import NotFoundView from '@/views/NotFoundView.vue'
+import NotFoundView from '@/public/NotFoundView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -20,7 +20,7 @@ const router = createRouter({
     {
       path: '/orders',
       name: 'orders',
-      component: () => import('../views/AboutView.vue'),
+      component: () => import('../public/AboutView.vue'),
       meta: {
         requiresAuth: true
       }
@@ -28,15 +28,22 @@ const router = createRouter({
     {
       path: '/sections',
       name: 'sections',
-      component: () => import('../views/AboutView.vue'),
+      component: () => import('../public/AboutView.vue'),
       meta: {
         requiresAuth: true
       }
     },
     {
-      path: '/theming',
-      name: 'theming',
-      component: () => import('../views/AboutView.vue'),
+      path: '/products/:tenantId',
+      name: 'products',
+      component: () => import('../public/products/ProductsView.vue'),
+      meta: {
+        requiresAuth: true
+      }
+    },
+    {
+      path: '/products/:tenantId/create-product',
+      component: () => import('../public/products/CreateProductView.vue'),
       meta: {
         requiresAuth: true
       }
@@ -44,14 +51,14 @@ const router = createRouter({
     {
       path: '/configs',
       name: 'configs',
-      component: () => import('../views/AboutView.vue'),
+      component: () => import('../public/AboutView.vue'),
       meta: {
         requiresAuth: true
       }
     },
     {
       path: '/tenant/create-tenant',
-      component: () => import('../views/tenant/CreateTenantView.vue'),
+      component: () => import('../admin/tenant/CreateTenantView.vue'),
       meta: {
         requiresAuth: true
       }
@@ -59,7 +66,7 @@ const router = createRouter({
     {
       name: 'tenant',
       path: '/tenant/:tenantId',
-      component: () => import('../views/tenant/UpdateTenantView.vue'),
+      component: () => import('../public/tenant/UpdateTenantView.vue'),
       meta: {
         requiresAuth: true
       }
@@ -75,14 +82,14 @@ const router = createRouter({
     {
       path: '/auth/register',
       name: 'register',
-      component: () => import('../views/auth/RegisterView.vue'),
+      component: () => import('../public/auth/RegisterView.vue'),
       meta: {
         isPublic: true
       }
     },
     {
       path: '/auth/reset-password',
-      component: () => import('../views/auth/ResetPasswordView.vue'),
+      component: () => import('../public/auth/ResetPasswordView.vue'),
       meta: {
         isPublic: true
       }
@@ -96,7 +103,7 @@ const router = createRouter({
     },
     {
       path: '/auth/change-password',
-      component: () => import('../views/auth/ChangePasswordView.vue'),
+      component: () => import('../public/auth/ChangePasswordView.vue'),
       meta: {
         requiresAuth: true
       }

@@ -61,7 +61,7 @@ const { handleSubmit, errors, defineField, setErrors, setFieldValue } = useForm(
 const selectedCountry = ref<Country>()
 const countryMask = ref()
 
-watch(selectedCountry,() => {
+watch(selectedCountry, () => {
   countryMask.value = props.countries.find((x) => x.code === selectedCountry.value?.code)?.mask
   setFieldValue('country', selectedCountry.value!.code)
 })
@@ -112,7 +112,7 @@ const onSubmit = handleSubmit((values) => {
               name="country"
             />
           </AppInputGroup>
-          <template v-if="countryMask !== undefined" >
+          <template v-if="countryMask !== undefined">
             <AppInputGroup label="Telefono" id="phoneNumber" name="phoneNumber">
               <InputMask
                 id="phone"

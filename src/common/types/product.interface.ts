@@ -5,6 +5,7 @@ export interface CreateProductRequest {
   productPrice: number
   visible: boolean
   choices: ChoiceDto[]
+  image?: File
 }
 
 interface ChoiceDto {
@@ -46,15 +47,11 @@ export interface ProductById {
   choices: ChoiceDto[]
 }
 
-interface Product {
+export interface Product {
   productId: number
   productName: string
   productDescription?: string
   productPrice: number
   visible: boolean
   image: string
-}
-
-export interface Products {
-  products: Product[]
 }

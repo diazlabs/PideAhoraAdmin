@@ -8,7 +8,7 @@ import UpdateTemplateForm from './components/UpdateTemplateForm.vue'
 const route = useRoute()
 
 const tenantId = route.params.tenantId as string
-const templateId = route.params.templateId as string
+const templateId = route.query.templateId as string
 
 if (!tenantId || tenantId.length < 35) {
   router.push({ path: '/not-found' })
@@ -19,7 +19,7 @@ if (!templateId || templateId.length < 35) {
 }
 
 const templateQuery = useQuery({
-  queryKey: ['tenant-get-by-id', tenantId],
+  queryKey: ['template-get-by-id', tenantId],
   queryFn: () => TemplateService.GetById(tenantId, templateId),
   refetchOnWindowFocus: false
 })

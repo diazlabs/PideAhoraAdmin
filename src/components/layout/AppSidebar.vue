@@ -29,7 +29,7 @@ const createItems = () => {
     items: [
       {
         label: 'Perfil de la tienda',
-        URL: `/tenant/${tenant.tenantId}`
+        url: `/tenant/${tenant.tenantId}`
       },
       {
         label: 'Productos',
@@ -38,10 +38,6 @@ const createItems = () => {
       {
         label: 'Templates',
         url: `/templates/${tenant.tenantId}`
-      },
-      {
-        label: 'Theming',
-        url: `/theming/${tenant.tenantId}`
       },
       {
         label: 'Configuraciones',
