@@ -22,7 +22,11 @@ const productsQuery = useQuery({
 
 <template>
   <template v-if="productsQuery.isSuccess && productsQuery?.data.value?.data">
-    <ProductsDataTable :tenant-id="tenantId" :products="productsQuery.data.value.data" />
+    <ProductsDataTable
+      :refetch="productsQuery.refetch"
+      :tenant-id="tenantId"
+      :products="productsQuery.data.value.data"
+    />
   </template>
   <template v-if="productsQuery.isError || !productsQuery.isFetching">
     <div class="flex items-center justify-center">

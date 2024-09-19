@@ -17,6 +17,7 @@ import { useToast } from 'primevue/usetoast'
 import ProductService from '@/common/services/ProductService'
 import type { CreateProductRequest, Product, ProductType } from '@/common/types/product.interface'
 import InputNumber from 'primevue/inputnumber'
+import router from '@/router'
 
 interface Props {
   tenantId: string
@@ -107,6 +108,8 @@ const { isPending, mutate: createProduct } = useMutation({
   mutationFn: (request: CreateProductRequest) => ProductService.Create(request),
   onSuccess(response) {
     if (response.ok) {
+      router.push({ name: 'products', params: { tenantId: props.tenantId } })
+
       toast.add({
         severity: 'success',
         summary: 'Producto creado',

@@ -20,6 +20,7 @@ setTheme()
 
 <template>
   <Toast />
+  <ConfirmPopup />
   <template v-if="isAuth">
     <MainLayout>
       <RouterView />

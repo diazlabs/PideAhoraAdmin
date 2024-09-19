@@ -58,7 +58,7 @@ export default class ProductService {
       if (iamge) request.append('logo', iamge)
 
       const response = await AxiosInstance.put<ApiResponse<UpdateProductResponse>>(
-        `/admin/tenants/${product.tenantId}/${product.productId}`,
+        `/products/${product.tenantId}/${product.productId}`,
         request
       )
 
@@ -71,7 +71,7 @@ export default class ProductService {
   static async Delete(tenantId: string, productId: number) {
     try {
       const response = await AxiosInstance.delete<ApiResponse<object>>(
-        `/admin/tenants/${tenantId}/${productId}`
+        `/products/${tenantId}/${productId}`
       )
 
       return response.data
@@ -83,7 +83,7 @@ export default class ProductService {
   static async GetById(tenantId: string, productId: number) {
     try {
       const response = await AxiosInstance.get<ApiResponse<ProductById>>(
-        `/admin/tenants/${tenantId}/${productId}`
+        `/products/${tenantId}/${productId}`
       )
 
       return response.data

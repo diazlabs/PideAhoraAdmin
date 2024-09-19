@@ -3,6 +3,7 @@ import { createPinia } from 'pinia'
 import PrimeVue from 'primevue/config'
 import ThemePresets from '@/presets/aura'
 import ToastService from 'primevue/toastservice'
+import ConfirmationService from 'primevue/confirmationservice'
 import './assets/style.css'
 import 'primeicons/primeicons.css'
 
@@ -16,6 +17,7 @@ app.use(PrimeVue, {
   pt: ThemePresets
 })
 app.use(ToastService)
+app.use(ConfirmationService)
 
 app.use(createPinia())
 app.use(VueQueryPlugin)
