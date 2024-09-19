@@ -1,5 +1,5 @@
 <script setup lang="tsx">
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 
 import AppInputGroup from '@/components/Inputs/AppInputGroup.vue'
 import GeneralErrors from '@/components/Errors/GeneralErrors.vue'
@@ -15,11 +15,14 @@ import type { GeneralErrorsType } from '@/common/types/api.interface'
 import { ACCEPTED_IMAGE_TYPES, MAX_FILE_SIZE } from '@/common/constants/image'
 import { useToast } from 'primevue/usetoast'
 import ProductService from '@/common/services/ProductService'
-import type { CreateProductRequest } from '@/common/types/product.interface'
+import type { CreateProductRequest, Product, ProductType } from '@/common/types/product.interface'
+import InputNumber from 'primevue/inputnumber'
 
 interface Props {
   tenantId: string
   tenantName: string
+  products: Product[]
+  productTypes: ProductType[]
 }
 
 const props = defineProps<Props>()
@@ -29,22 +32,30 @@ const validationSchema = toTypedSchema(
     productName: zod
       .string({ message: 'Debes ingresar el nombre del producto' })
       .max(30, { message: 'El nombre del producto no puede ser mayor a 30 caracteres' }),
-    productPrice: zod.number().min(0, { message: 'Debes ingresar un precio mayor igual a 0' }),
+    productPrice: zod
+      .number({ message: 'Debes ingresar el precio del producto' })
+      .min(0, { message: 'Debes ingresar un precio mayor igual a 0' }),
     productDescription: zod
       .string()
       .max(100, { message: 'La descripcion no puede ser mayor a 100 caracteres' })
       .optional(),
-    visible: zod.boolean(),
+    productType: zod.enum(
+      props.productTypes.length > 0
+        ? (props.productTypes.map((x) => x.type) as [string, ...string[]])
+        : ['default'],
+      { message: 'Debes seleccionar un pais' }
+    ),
+    visible: zod.boolean().default(true),
     choices: zod
       .array(
         zod.object({
           productChoiceId: zod.number().default(0),
-          choice: zod.string().min(2, { message: 'Debes ingresar el texto de la eleccion' }),
+          choice: zod.string().min(2, { message: 'Debes ingresar el texto de la elección' }),
           quantity: zod
             .number({ message: 'Debes ingresar la cantidad que se puede escoger' })
             .min(1, { message: 'La cantidad minima es 1' }),
-          required: zod.boolean(),
-          visible: zod.boolean(),
+          required: zod.boolean().default(false),
+          visible: zod.boolean().default(true),
           options: zod
             .array(
               zod.object({
@@ -52,7 +63,8 @@ const validationSchema = toTypedSchema(
                 optionPrice: zod
                   .number()
                   .min(0, { message: 'Debes ingresar un precio mayor igual a 0' }),
-                visible: zod.boolean()
+                visible: zod.boolean(),
+                productId: zod.any()
               })
             )
             .min(1, { message: 'Debes ingresar al menos una opcion' })
@@ -73,13 +85,19 @@ const validationSchema = toTypedSchema(
   })
 )
 
-const { handleSubmit, setErrors, defineField } = useForm({
+const { handleSubmit, setErrors, defineField, setFieldError, errors, setFieldValue } = useForm({
   validationSchema
 })
 
 const [choices] = defineField('choices')
+const [productPrice] = defineField('productPrice')
 const [image] = defineField('image')
 const [visible] = defineField('visible')
+const selectedProductType = ref<ProductType>()
+
+watch(selectedProductType, () => {
+  setFieldValue('productType', selectedProductType.value!.type)
+})
 
 const generalErrors = ref<GeneralErrorsType>(null)
 
@@ -114,29 +132,77 @@ const onSelectFile = (event: Event) => {
 }
 
 const onSubmit = handleSubmit((values) => {
-  createProduct({ ...values, tenantId: props.tenantId })
+  let isError = false
+
+  values.choices.forEach((choice, index) => {
+    choice.options.forEach((option, optionIndex) => {
+      if (!option.productId.productId) {
+        isError = true
+        setFieldError(
+          `choices.${index}.options.${optionIndex}.productId`,
+          'Debes selecciónar un producto'
+        )
+      }
+    })
+  })
+
+  if (isError) {
+    return
+  }
+
+  createProduct({
+    ...values,
+    tenantId: props.tenantId,
+    choices: values.choices.map((x) => ({
+      ...x,
+      options: x.options.map((y) => ({ ...y, productId: y.productId.productId }))
+    }))
+  })
 })
 </script>
 
 <template>
   <div class="flex justify-center items-center min-h-screen p-10">
-    <Card class="max-w-[400px] p-2 pr-0 lg:max-w-7xl">
+    <Card :class="`max-w-[400px] pr-0 ${products.length > 0 && 'md:min-w-full'}`">
       <template #title>
         <h1 class="text-center">Crear producto para la tienda {{ tenantName }}</h1>
       </template>
       <template #content>
         <form
           @submit.prevent="onSubmit"
-          class="overflow-y-auto lg:grid lg:grid-cols-2 h-[80vh] gap-10"
+          :class="
+            products.length > 0 &&
+            'overflow-y-auto md:grid md:grid-cols-3 h-[80vh] max-h-[80vh]: gap-10 scrollbar pr-3 md:pr-0'
+          "
         >
-          <div>
+          <div class="p-0.5">
             <AppInputGroup label="Nombre" id="productName" name="productName" />
             <AppInputGroup label="Descripcion" id="productDescription" name="productDescription" />
-            <AppInputGroup label="Precio" id="productPrice" name="productPrice" type="number" />
+            <AppInputGroup label="Tipo" id="type" name="type">
+              <Select
+                v-model="selectedProductType"
+                :options="productTypes"
+                input-id="type"
+                optionLabel="type"
+                placeholder="Selecciona un tipo de producto"
+                class="w-full"
+                name="country"
+              />
+            </AppInputGroup>
+            <AppInputGroup label="Precio" id="productPrice" name="productPrice">
+              <InputNumber
+                v-model="productPrice"
+                input-id="productPrice"
+                mode="currency"
+                currency="HNL"
+                locale="es-HN"
+                input-class="w-full"
+              />
+            </AppInputGroup>
             <AppInputGroup label="Visible (Para usuarios)" id="visible" name="visible">
               <ToggleSwitch id="visible" v-model="visible" />
             </AppInputGroup>
-            <AppInputGroup label="Imagen" id="iamge" name="iamge">
+            <AppInputGroup label="Imagen" id="iamge" name="iamge" class="overflow-hidden">
               <input
                 type="file"
                 name="image"
@@ -147,67 +213,146 @@ const onSubmit = handleSubmit((values) => {
                 @change="onSelectFile"
               />
             </AppInputGroup>
-            <Button type="submit" :disabled="isPending" class="w-full mb-5">Crear</Button>
+            <Button type="submit" :disabled="isPending" class="w-full mb-5 lg:mb-0"
+              >Crear producto</Button
+            >
             <GeneralErrors :generalErrors="generalErrors" />
           </div>
-          <div class="overflow-y-auto scrollbar p-0.5 pr-4">
-            <FieldArray name="choices" v-slot="{ fields, push, remove }">
-              <Button
-                type="button"
-                severity="warn"
-                class="mb-5 !text-white"
-                @click="
-                  push({
-                    choice: '',
-                    quantity: 0,
-                    required: false,
-                    visible: false,
-                    productChoiceId: 0,
-                    options: []
-                  })
-                "
-                >Crear elección</Button
-              >
-              <fieldset class="InputGroup" v-for="(field, idx) in fields" :key="field.key">
-                <AppInputGroup
-                  label="Eleccion"
-                  :id="`choice_${idx}`"
-                  :name="`choices[${idx}].choice`"
-                />
-                <AppInputGroup
-                  label="Cantidad"
-                  :id="`quantity_${idx}`"
-                  :name="`choices[${idx}].quantity`"
-                  type="number"
-                />
-                <div class="flex justify-between">
+          <div class="overflow-y-auto scrollbar p-0.5 md:pr-4 col-span-2">
+            <template v-if="products.length > 0">
+              <FieldArray name="choices" v-slot="{ fields, push, remove }">
+                <fieldset class="InputGroup" v-for="(field, idx) in fields" :key="field.key">
                   <AppInputGroup
-                    label="Requerido"
-                    :id="`required_${idx}`"
-                    :name="`choices[${idx}].required`"
-                  >
-                    <ToggleSwitch :id="`required_${idx}`" v-model="choices![idx].required" />
-                  </AppInputGroup>
+                    label="Elección"
+                    :id="`choice_${idx}`"
+                    :name="`choices[${idx}].choice`"
+                  />
 
-                  <AppInputGroup
-                    label="Visible (Para usuarios)"
-                    :id="`visible_${idx}`"
-                    :name="`choices[${idx}].visible`"
+                  <div class="flex gap-4 items-center">
+                    <AppInputGroup
+                      class="w-1/2 md:w-32"
+                      label="Cantidad"
+                      :id="`quantity_${idx}`"
+                      :name="`choices[${idx}].quantity`"
+                    >
+                      <InputNumber
+                        :id="`quantity_${idx}`"
+                        :name="`choices[${idx}].quantity`"
+                        v-model="choices![idx].quantity"
+                        :min="0"
+                        :input-class="`w-full`"
+                      />
+                    </AppInputGroup>
+
+                    <AppInputGroup
+                      label="Requerido"
+                      :id="`required_${idx}`"
+                      :name="`choices[${idx}].required`"
+                    >
+                      <ToggleSwitch :id="`required_${idx}`" v-model="choices![idx].required" />
+                    </AppInputGroup>
+
+                    <AppInputGroup
+                      label="Visible"
+                      :id="`visible_${idx}`"
+                      :name="`choices[${idx}].visible`"
+                    >
+                      <ToggleSwitch :id="`visible_${idx}`" v-model="choices![idx].visible" />
+                    </AppInputGroup>
+                  </div>
+
+                  <FieldArray
+                    :name="`choices[${idx}].options`"
+                    v-slot="{ fields: optionsFields, push: optionsPush, remove: optionsRemove }"
                   >
-                    <ToggleSwitch :id="`visible_${idx}`" v-model="choices![idx].visible" />
-                  </AppInputGroup>
-                </div>
+                    <fieldset
+                      class="border border-solid border-gray-600 dark:border-gray-300 p-3 flex flex-col md:flex-row md:items-end gap-4 mb-4"
+                      v-for="(optionField, optionIndex) in optionsFields"
+                      :key="optionField.key"
+                    >
+                      <AppInputGroup
+                        label="Producto"
+                        :id="`choices[${idx}].options[${optionIndex}].productId`"
+                        :name="`choices[${idx}].options[${optionIndex}].productId`"
+                      >
+                        <Select
+                          :id="`choices[${idx}].options[${optionIndex}].productId`"
+                          :name="`choices[${idx}].options[${optionIndex}].productId`"
+                          v-model="choices![idx].options[optionIndex].productId"
+                          :options="products"
+                          optionLabel="productName"
+                          placeholder="Seleccióna un producto"
+                          class="w-full"
+                        />
+                      </AppInputGroup>
+
+                      <AppInputGroup
+                        label="Precio"
+                        :id="`choices[${idx}].options[${optionIndex}].optionPrice`"
+                        :name="`choices[${idx}].options[${optionIndex}].optionPrice`"
+                      >
+                        <InputNumber
+                          :id="`price_${optionIndex}`"
+                          :name="`choices[${idx}].options[${optionIndex}].optionPrice`"
+                          v-model="choices![idx].options[optionIndex].optionPrice"
+                          :min="0"
+                          :input-class="`w-full`"
+                        />
+                      </AppInputGroup>
+                      <Button
+                        class="!text-white mb-5"
+                        severity="danger"
+                        icon="pi pi-trash"
+                        iconPos="right"
+                        type="button"
+                        @click="optionsRemove(optionIndex)"
+                      />
+                    </fieldset>
+                    <Button
+                      type="button"
+                      severity="warn"
+                      class="mb-5 !text-white mr-5"
+                      @click="
+                        optionsPush({
+                          visible: true,
+                          optionPrice: 0,
+                          choiceOptionId: 0,
+                          productId: 0
+                        })
+                      "
+                      >Añadir opcion</Button
+                    >
+                  </FieldArray>
+                  <Button
+                    label="Eliminar elección"
+                    class="!text-white mb-5"
+                    severity="danger"
+                    icon="pi pi-trash"
+                    iconPos="right"
+                    type="button"
+                    @click="remove(idx)"
+                  />
+                  <p>{{ errors.choices }}</p>
+                </fieldset>
+
                 <Button
-                  label="Eliminar"
-                  class="!text-white mb-5"
-                  severity="danger"
-                  icon="pi pi-trash"
-                  iconPos="right"
                   type="button"
-                  @click="remove(idx)"
-                />
-              </fieldset>
-            </FieldArray>
+                  severity="warn"
+                  class="mb-5 !text-white w-full"
+                  @click="
+                    push({
+                      choice: '',
+                      quantity: 0,
+                      required: false,
+                      visible: true,
+                      productChoiceId: 0,
+                      options: []
+                    })
+                  "
+                  >Añadir elección</Button
+                >
+              </FieldArray>
+            </template>
           </div>
         </form>
       </template>

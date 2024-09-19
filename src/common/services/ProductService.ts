@@ -7,6 +7,7 @@ import type {
   CreateProductResponse,
   Product,
   ProductById,
+  ProductType,
   UpdateProductRequest,
   UpdateProductResponse
 } from '../types/product.interface'
@@ -20,6 +21,7 @@ export default class ProductService {
       request.append('productName', product.productName)
       request.append('productPrice', product.productPrice.toString())
       request.append('visible', `${product.visible}`)
+      request.append('productType', `${product.productType}`)
       if (product.image) {
         request.append('image', product.image)
       }
@@ -28,7 +30,7 @@ export default class ProductService {
         request.append('productDescription', product.productDescription)
 
       const response = await AxiosInstance.post<ApiResponse<CreateProductResponse>>(
-        '/products',
+        `/products/${product.tenantId}`,
         request
       )
 
@@ -93,6 +95,28 @@ export default class ProductService {
   static async GetAll(tenantId: string): Promise<ApiResponse<Product[]>> {
     try {
       const response = await AxiosInstance.get<ApiResponse<Product[]>>(`/products/${tenantId}`)
+
+      return response.data
+    } catch (error) {
+      return handleHttpError(error)
+    }
+  }
+
+  static async GetAllExtra(tenantId: string): Promise<ApiResponse<Product[]>> {
+    try {
+      const response = await AxiosInstance.get<ApiResponse<Product[]>>(
+        `/products/${tenantId}/extras`
+      )
+
+      return response.data
+    } catch (error) {
+      return handleHttpError(error)
+    }
+  }
+
+  static async GetProductTypes(): Promise<ApiResponse<ProductType[]>> {
+    try {
+      const response = await AxiosInstance.get<ApiResponse<ProductType[]>>(`/products/types`)
 
       return response.data
     } catch (error) {

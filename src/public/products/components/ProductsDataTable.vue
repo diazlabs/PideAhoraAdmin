@@ -4,7 +4,7 @@ import type { Product } from '../../../common/types/product.interface'
 defineProps<{ products: Product[]; tenantId: string }>()
 
 const formatCurrency = (value: number) => {
-  return value.toLocaleString('en-US', { style: 'currency', currency: 'USD' })
+  return value.toLocaleString('es-HN', { style: 'currency', currency: 'HNL' })
 }
 </script>
 
@@ -33,6 +33,7 @@ const formatCurrency = (value: number) => {
         </template>
       </Column>
       <Column field="productDescription" header="Descripcion"></Column>
+      <Column field="productType" header="Tipo"></Column>
       <template #footer>
         In total there are {{ products ? products.length : 0 }} products.
       </template>

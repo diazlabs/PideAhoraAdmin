@@ -2,6 +2,7 @@ export interface CreateProductRequest {
   tenantId: string
   productName: string
   productDescription?: string
+  productType: string
   productPrice: number
   visible: boolean
   choices: ChoiceDto[]
@@ -21,6 +22,7 @@ interface ChoiceOptionDto {
   choiceOptionId: number
   optionPrice: number
   visible: boolean
+  productId: number
 }
 
 export interface CreateProductResponse {}
@@ -51,7 +53,13 @@ export interface Product {
   productId: number
   productName: string
   productDescription?: string
+  productType: string
   productPrice: number
   visible: boolean
   image: string
+}
+
+export interface ProductType {
+  label: string
+  type: string
 }
