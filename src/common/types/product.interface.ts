@@ -44,6 +44,7 @@ export interface ProductById {
   productName: string
   productDescription?: string
   productPrice: number
+  productType: string
   visible: boolean
   image: string
   choices: ChoiceDto[]

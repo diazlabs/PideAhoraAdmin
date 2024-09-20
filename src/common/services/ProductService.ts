@@ -80,7 +80,7 @@ export default class ProductService {
     }
   }
 
-  static async GetById(tenantId: string, productId: number) {
+  static async GetById(tenantId: string, productId: number): Promise<ApiResponse<ProductById>> {
     try {
       const response = await AxiosInstance.get<ApiResponse<ProductById>>(
         `/products/${tenantId}/${productId}`
