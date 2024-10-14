@@ -40,10 +40,7 @@ export default class ProductService {
     }
   }
 
-  static async Update(
-    product: UpdateProductRequest,
-    iamge?: File
-  ): Promise<ApiResponse<UpdateProductResponse>> {
+  static async Update(product: UpdateProductRequest): Promise<ApiResponse<UpdateProductResponse>> {
     try {
       const request = new FormData()
 
@@ -55,7 +52,7 @@ export default class ProductService {
       if (product.productDescription)
         request.append('productDescription', product.productDescription)
 
-      if (iamge) request.append('logo', iamge)
+      if (product.image) request.append('image', product.image)
 
       const response = await AxiosInstance.put<ApiResponse<UpdateProductResponse>>(
         `/products/${product.tenantId}/${product.productId}`,

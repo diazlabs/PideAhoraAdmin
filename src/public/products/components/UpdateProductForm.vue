@@ -18,6 +18,7 @@ import ProductService from '@/common/services/ProductService'
 import type { Product, ProductById, UpdateProductRequest } from '@/common/types/product.interface'
 import InputNumber from 'primevue/inputnumber'
 import router from '@/router'
+import { imageCdn } from '@/common/constants/cdn'
 
 interface Props {
   tenantId: string
@@ -158,6 +159,7 @@ const onSubmit = handleSubmit((values) => {
     ...values,
     productId: props.productId,
     tenantId: props.tenantId,
+    image: image.value,
     choices: values.choices.map((x) => ({
       ...x,
       options: x.options.map((y) => ({ ...y, productId: y.productId.productId }))
@@ -207,6 +209,15 @@ const onSubmit = handleSubmit((values) => {
                 @change="onSelectFile"
               />
             </AppInputGroup>
+
+            <tempalte v-if="props.product.image">
+              <img
+                :src="`${imageCdn}/${props.productId}`"
+                :alt="props.product.productName"
+                class="mb-5"
+              />
+            </tempalte>
+
             <Button type="submit" :disabled="isPending" class="w-full mb-5 lg:mb-0"
               >Actualizar producto</Button
             >

@@ -64,7 +64,7 @@ const router = createRouter({
       }
     },
     {
-      path: '/tenant/create-tenant',
+      path: '/create-tenant',
       component: () => import('../admin/tenant/CreateTenantView.vue'),
       meta: {
         requiresAuth: true

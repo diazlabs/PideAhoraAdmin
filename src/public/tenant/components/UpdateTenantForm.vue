@@ -17,6 +17,7 @@ import TenantService from '../../../common/services/TenantService'
 import { ACCEPTED_IMAGE_TYPES, MAX_FILE_SIZE } from '@/common/constants/image'
 import { useToast } from 'primevue/usetoast'
 import { useAuthStore } from '../../../stores/auth'
+import { imageCdn } from '@/common/constants/cdn'
 
 interface Props extends UpdateTenantRequest {
   categories: TenantCategory[]
@@ -148,6 +149,7 @@ const onSubmit = handleSubmit((values) => {
               @change="onSelectFile"
             />
           </AppInputGroup>
+          <img class="mb-5" :src="`${imageCdn}/${props.tenantId}`" :alt="props.name" />
           <Button type="submit" :disabled="isPending" class="w-full mb-5">Actualizar</Button>
           <GeneralErrors :generalErrors="generalErrors" />
         </form>

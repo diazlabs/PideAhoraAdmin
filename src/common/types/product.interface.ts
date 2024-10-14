@@ -35,6 +35,7 @@ export interface UpdateProductRequest {
   productPrice: number
   visible: boolean
   choices: ChoiceDto[]
+  image?: File
 }
 
 export interface UpdateProductResponse {}

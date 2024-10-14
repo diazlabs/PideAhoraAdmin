@@ -74,8 +74,8 @@ const { isPending, mutate: createTenant } = useMutation({
   onSuccess(response) {
     if (response.ok) {
       queryClient.invalidateQueries({ queryKey: ['tenants'] })
-
-      router.push({ name: 'tenant', params: { tenantId: response.data!.tenantId } })
+      console.log(response.data)
+      router.push({ name: 'tenant', params: { tenantId: response.data!.tenantId }, force: true })
       return
     }
 

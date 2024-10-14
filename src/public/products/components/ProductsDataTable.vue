@@ -5,6 +5,7 @@ import { useConfirm } from 'primevue/useconfirm'
 import { formatCurrency } from '@/common/utils/intl'
 import { useToast } from 'primevue/usetoast'
 import ProductService from '@/common/services/ProductService'
+import { imageCdn } from '@/common/constants/cdn'
 
 const props = defineProps<{
   products: Product[]
@@ -93,8 +94,8 @@ const deleteConfirmation = (productId: number, event: any) => {
       <Column header="Imagen">
         <template #body="slotProps">
           <img
-            :src="`https://primefaces.org/cdn/primevue/images/product/${slotProps.data.image}`"
-            :alt="slotProps.data.image"
+            :src="`${imageCdn}/${slotProps.data.productId}`"
+            :alt="slotProps.data.name"
             class="w-24 rounded"
           />
         </template>
@@ -124,9 +125,7 @@ const deleteConfirmation = (productId: number, event: any) => {
           </div>
         </template>
       </Column>
-      <template #footer>
-        In total there are {{ products ? products.length : 0 }} products.
-      </template>
+      <template #footer> En total hay {{ products ? products.length : 0 }} productos. </template>
     </DataTable>
   </div>
 </template>

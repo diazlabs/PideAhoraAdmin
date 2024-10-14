@@ -17,7 +17,7 @@ const items: MenuItem[] = [
     items: [
       {
         label: 'Crear tenant',
-        url: '/tenant/create-tenant'
+        url: '/create-tenant'
       }
     ]
   }
