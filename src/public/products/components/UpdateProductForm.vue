@@ -212,7 +212,7 @@ const onSubmit = handleSubmit((values) => {
 
             <tempalte v-if="props.product.image">
               <img
-                :src="`${imageCdn}/${props.productId}`"
+                :src="`${imageCdn}/${props.product.image}`"
                 :alt="props.product.productName"
                 class="mb-5"
               />

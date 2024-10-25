@@ -94,7 +94,7 @@ const deleteConfirmation = (productId: number, event: any) => {
       <Column header="Imagen">
         <template #body="slotProps">
           <img
-            :src="`${imageCdn}/${slotProps.data.productId}`"
+            :src="`${imageCdn}/${slotProps.data.image}`"
             :alt="slotProps.data.name"
             class="w-24 rounded"
           />
@@ -117,7 +117,7 @@ const deleteConfirmation = (productId: number, event: any) => {
               icon="pi pi-pencil"
             />
             <Button
-              @click="($event) => deleteConfirmation(slotProps.data.productId, $event)"
+              @click="($event: any) => deleteConfirmation(slotProps.data.productId, $event)"
               type="button"
               severity="danger"
               icon="pi pi-trash"
