@@ -18,9 +18,9 @@ const router = createRouter({
       }
     },
     {
-      path: '/orders',
+      path: '/orders/:tenantId',
       name: 'orders',
-      component: () => import('../public/AboutView.vue'),
+      component: () => import('../public/orders/OrdersView.vue'),
       meta: {
         requiresAuth: true
       }

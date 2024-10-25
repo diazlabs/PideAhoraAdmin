@@ -1,13 +1,10 @@
-export interface Orders {
-  orders: Order[]
-}
-
-interface Order {
+export interface Order {
   orderId: string
   tenantId: string
   name: string
   phoneNumber: string
   email: string | null
+  createdAt: Date
   userId: string | null
   orderNotes: string | null
   deliveryType: string
