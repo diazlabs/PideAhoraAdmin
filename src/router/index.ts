@@ -56,9 +56,16 @@ const router = createRouter({
       }
     },
     {
-      path: '/configs',
+      path: '/configs/:tenantId',
       name: 'configs',
-      component: () => import('../public/AboutView.vue'),
+      component: () => import('../public/tenant-configuration/TenantConfigurationsView.vue'),
+      meta: {
+        requiresAuth: true
+      }
+    },
+    {
+      path: '/configs/:tenantId/create',
+      component: () => import('../admin/tenant-configuration/CreateConfigurationView.vue'),
       meta: {
         requiresAuth: true
       }

@@ -1,5 +1,5 @@
 <script setup lang="tsx">
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 
 import AppInputGroup from '@/components/Inputs/AppInputGroup.vue'
 import GeneralErrors from '@/components/Errors/GeneralErrors.vue'
@@ -19,7 +19,6 @@ import type { CreateConfigRequest, TenantConfigType } from '@/common/types/tenan
 
 interface Props {
   tenantId: string
-  templateId: string
   configTypes: TenantConfigType[]
 }
 
@@ -35,22 +34,26 @@ const validationSchema = toTypedSchema(
     ),
     configName: zod
       .string()
-      .max(30, { message: 'El nombre del template no puede ser mayor a 30 caracteres' }),
+      .max(30, { message: 'El nombre de la configuracion no puede ser mayor a 30 caracteres' }),
     configValue: zod
       .string()
       .max(200, { message: 'La descripción no puede ser mayor a 200 caracteres' }),
-    enabled: zod.boolean(),
-    visible: zod.boolean()
+    enabled: zod.boolean().default(false),
+    visible: zod.boolean().default(false)
   })
 )
 
-const { handleSubmit, setErrors } = useForm({
+const { handleSubmit, setErrors, setFieldValue } = useForm({
   validationSchema
 })
 
 const selectedType = ref<TenantConfigType>()
 const enabled = ref<boolean>(false)
 const visible = ref<boolean>(false)
+
+watch(selectedType, () => {
+  setFieldValue('configType', selectedType.value?.type)
+})
 
 const generalErrors = ref<GeneralErrorsType>(null)
 
@@ -63,7 +66,7 @@ const { isPending, mutate: createConfig } = useMutation({
       toast.add({
         severity: 'success',
         summary: 'Creado exitosamente',
-        detail: 'Se ha creado el template correctamente',
+        detail: 'Se ha creado la configuracion correctamente',
         life: 5000,
         closable: true
       })
@@ -84,6 +87,7 @@ const onSubmit = handleSubmit((values) => {
     ...values,
     tenantId: props.tenantId,
     enabled: enabled.value,
+    visible: visible.value,
     configType: selectedType.value!.type
   })
 })

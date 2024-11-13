@@ -3,7 +3,7 @@ import router from '@/router'
 import { useQuery } from '@tanstack/vue-query'
 import { useRoute } from 'vue-router'
 import TenantConfigService from '@/common/services/TenantConfigService'
-import TenantConfigurationForm from './components/TenantConfigurationForm.vue'
+import TenantConfigurationForm from '../tenant-configuration/components/TenantConfigurationForm.vue'
 
 const route = useRoute()
 
@@ -28,7 +28,12 @@ const configTypes = useQuery({
 
 <template>
   <template
-    v-if="configQuery.isSuccess && configQuery.data && configTypes.data && configTypes.isSuccess"
+    v-if="
+      configQuery.isSuccess &&
+      configQuery.data.value?.data &&
+      configTypes.data.value?.data &&
+      configTypes.isSuccess
+    "
   >
     <TenantConfigurationForm
       :config-types="configTypes.data.value!.data!"

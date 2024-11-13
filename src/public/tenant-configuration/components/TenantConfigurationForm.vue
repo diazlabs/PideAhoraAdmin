@@ -16,6 +16,10 @@ import type {
   UpdateAllConfigRequest
 } from '@/common/types/tenantConfigs.interface'
 import TenantConfigService from '@/common/services/TenantConfigService'
+import router from '@/router'
+import { useForm } from 'vee-validate'
+import * as zod from 'zod'
+import { toTypedSchema } from '@vee-validate/zod'
 
 interface Props {
   configs: TenantConfig[]
@@ -26,6 +30,35 @@ interface Props {
 const props = defineProps<Props>()
 const generalErrors = ref<GeneralErrorsType>(null)
 const toast = useToast()
+
+const validationSchema = toTypedSchema(
+  zod.object({
+    configs: zod
+      .array(
+        zod.object({
+          configId: zod.string(),
+          configValue: zod
+            .string()
+            .max(200, { message: 'La descripción no puede ser mayor a 200 caracteres' }),
+          enabled: zod.boolean()
+        })
+      )
+      .min(1, { message: 'Debes ingresar al menos una opcion' })
+  })
+)
+
+const { handleSubmit, setErrors, defineField } = useForm({
+  validationSchema,
+  initialValues: {
+    configs: props.configs.map((config) => ({
+      configId: config.tenantConfigId,
+      configValue: config.configValue,
+      enabled: config.enabled
+    }))
+  }
+})
+
+const [configurations] = defineField('configs')
 
 const { isPending, mutate: updateConfigs } = useMutation({
   mutationFn: (request: UpdateAllConfigRequest) => TenantConfigService.UpdateAll(request),
@@ -41,39 +74,27 @@ const { isPending, mutate: updateConfigs } = useMutation({
       return
     }
 
-    if (response.errors !== null) {
-      return
-    }
-
     generalErrors.value = response.generalErrors
+
+    if (response.errors !== null) {
+      setErrors(response.errors!)
+    }
   }
 })
 
-const onSubmit = () => {
-  const form = document.querySelector('form')
-  const formData = new FormData(form!)
-  const data = Object.fromEntries(formData.entries())
-
-  const request: UpdateAllConfigRequest = {
+const onSubmit = handleSubmit((values) => {
+  updateConfigs({
     tenantId: props.tenantId,
-    configs: props.configs.map((config) => ({
-      enabled:
-        document.getElementById(config.configName + '-enabled')!.getAttribute('checked') !== null,
-      configValue: data[config.configName] as string,
-      tenantConfigId: config.tenantConfigId
-    }))
-  }
-
-  console.log(request)
-  //updateConfigs(request)
-}
+    configs: values.configs
+  })
+})
 </script>
 
 <template>
   <div class="flex justify-center items-center min-h-screen p-5">
     <Card class="max-w-[400px] w-full">
       <template #title>
-        <h1 class="text-center">Actualizar tienda</h1>
+        <h1 class="text-center">Actualizar configuraciones</h1>
       </template>
       <template #content>
         <form @submit.prevent="onSubmit">
@@ -84,22 +105,36 @@ const onSubmit = () => {
                 <AppInputGroup
                   :key="configIndex"
                   :label="config.configName"
-                  :id="config.configName"
-                  :name="config.configName"
-                  :value="config.configValue"
+                  :id="config.configValue"
+                  :name="`configs[${configIndex}].configValue`"
                 />
                 <AppInputGroup
                   label="Activado"
-                  :name="`${config.configName}-enabled`"
+                  :name="`configs[${configIndex}].enabled`"
+                  :id="`enabled_${config.tenantConfigId}`"
                   :key="configIndex"
                 >
-                  <ToggleSwitch :modelValue="config.enabled" />
+                  <ToggleSwitch
+                    :id="`enabled_${config.tenantConfigId}`"
+                    v-model="configurations![configIndex].enabled"
+                  />
                 </AppInputGroup>
               </template>
             </template>
           </div>
-          <AppInputGroup label="Nombre de la tienda" id="name" name="name" />
           <Button type="submit" :disabled="isPending" class="w-full mb-5">Actualizar</Button>
+          <Button
+            type="button"
+            class="w-full"
+            severity="secondary"
+            @click="
+              () =>
+                router.push({
+                  path: `/configs/${props.tenantId}/create`
+                })
+            "
+            >Crear configuracion</Button
+          >
           <GeneralErrors :generalErrors="generalErrors" />
         </form>
       </template>

@@ -45,7 +45,7 @@ export default class TenantConfigService {
     try {
       const response = await AxiosInstance.put<ApiResponse<UpdateConfigResponse>>(
         `/tenant-configuration/${request.tenantId}/all`,
-        request.configs
+        { configs: request.configs }
       )
 
       return response.data

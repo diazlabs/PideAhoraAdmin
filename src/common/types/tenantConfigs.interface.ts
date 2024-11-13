@@ -25,7 +25,7 @@ export interface UpdateAllConfigRequest {
 interface UpdateConfig {
   configValue: string
   enabled: boolean
-  tenantConfigId: string
+  configId: string
 }
 
 export interface UpdateConfigResponse {}

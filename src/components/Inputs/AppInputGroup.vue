@@ -9,6 +9,7 @@ interface Props {
   type?: InputTypeHTMLAttribute
   placeholder?: string
   name: string
+  id?: string
   inputProps?: Partial<InputAttributes>
 }
 
@@ -19,7 +20,7 @@ const { errors, value } = useField(() => props.name)
 
 <template>
   <div class="flex flex-col gap-2 mb-5">
-    <label :for="inputProps?.id">{{ label }}</label>
+    <label :for="props?.id">{{ label }}</label>
     <InputGroup>
       <template v-if="icon">
         <InputGroupAddon>
@@ -35,6 +36,7 @@ const { errors, value } = useField(() => props.name)
           :name="name"
           v-bind="inputProps"
           :invalid="errors.length > 0"
+          :id="props?.id"
         />
       </slot>
     </InputGroup>

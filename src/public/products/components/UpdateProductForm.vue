@@ -210,13 +210,13 @@ const onSubmit = handleSubmit((values) => {
               />
             </AppInputGroup>
 
-            <tempalte v-if="props.product.image">
+            <template v-if="props.product.image">
               <img
                 :src="`${imageCdn}/${props.product.image}`"
                 :alt="props.product.productName"
                 class="mb-5"
               />
-            </tempalte>
+            </template>
 
             <Button type="submit" :disabled="isPending" class="w-full mb-5 lg:mb-0"
               >Actualizar producto</Button
