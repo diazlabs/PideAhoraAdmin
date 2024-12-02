@@ -8,19 +8,19 @@ import UpdateTemplateForm from './components/UpdateTemplateForm.vue'
 const route = useRoute()
 
 const tenantId = route.params.tenantId as string
-const templateId = route.query.templateId as string
+const tenantTemplateId = route.params.tenantTemplateId as string
 
 if (!tenantId || tenantId.length < 35) {
   router.push({ path: '/not-found' })
 }
 
-if (!templateId || templateId.length < 35) {
+if (!tenantTemplateId || tenantTemplateId.length < 35) {
   router.push({ path: '/not-found' })
 }
 
 const templateQuery = useQuery({
   queryKey: ['template-get-by-id', tenantId],
-  queryFn: () => TemplateService.GetById(tenantId, templateId),
+  queryFn: () => TemplateService.GetById(tenantId, tenantTemplateId),
   refetchOnWindowFocus: false
 })
 
@@ -28,13 +28,14 @@ const { data } = templateQuery
 </script>
 
 <template>
-  <template v-if="templateQuery.isSuccess && templateQuery?.data">
+  <template v-if="templateQuery.isSuccess && templateQuery?.data.value?.data">
     <UpdateTemplateForm
       :tenant-id="tenantId"
-      :tenant-template-id="templateId"
-      :description="data!.data!.description"
+      :tenant-template-id="tenantTemplateId"
       :name="data!.data!.name"
       :header="data!.data!.header"
+      :description="data!.data!.description"
+      :logo-url="data!.data!.logo"
     />
   </template>
   <template v-if="templateQuery.isError || !templateQuery.isFetching">

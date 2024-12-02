@@ -27,7 +27,3 @@ export interface TemplateById {
   description: string
   logo: string
 }
-
-export interface Templates {
-  templates: TemplateById[]
-}

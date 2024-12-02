@@ -16,12 +16,12 @@ import { ACCEPTED_IMAGE_TYPES, MAX_FILE_SIZE } from '@/common/constants/image'
 import { useToast } from 'primevue/usetoast'
 
 import TemplateService from '@/common/services/TemplateService'
-import type {
-  CreateTemplateRequest,
-  UpdateTemplateRequest
-} from '@/common/types/template.interface'
+import type { UpdateTemplateRequest } from '@/common/types/template.interface'
+import { imageCdn } from '@/common/constants/cdn'
 
-interface Props extends UpdateTemplateRequest {}
+interface Props extends UpdateTemplateRequest {
+  logoUrl: string
+}
 
 const props = defineProps<Props>()
 
@@ -61,8 +61,8 @@ const generalErrors = ref<GeneralErrorsType>(null)
 
 const toast = useToast()
 
-const { isPending, mutate: createTemplate } = useMutation({
-  mutationFn: (request: CreateTemplateRequest) => TemplateService.Create(request),
+const { isPending, mutate: updateTemplate } = useMutation({
+  mutationFn: (request: UpdateTemplateRequest) => TemplateService.Update(request),
   onSuccess(response) {
     if (response.ok) {
       toast.add({
@@ -90,7 +90,7 @@ const onSelectFile = (event: Event) => {
 }
 
 const onSubmit = handleSubmit((values) => {
-  createTemplate({ ...values, tenantId: props.tenantId })
+  updateTemplate({ ...values, tenantId: props.tenantId, tenantTemplateId: props.tenantTemplateId })
 })
 </script>
 
@@ -98,7 +98,7 @@ const onSubmit = handleSubmit((values) => {
   <div class="flex justify-center items-center min-h-screen p-5">
     <Card class="max-w-[400px] w-full">
       <template #title>
-        <h1 class="text-center">Crear template</h1>
+        <h1 class="text-center">Actualizar template</h1>
       </template>
       <template #content>
         <form @submit.prevent="onSubmit">
@@ -116,7 +116,10 @@ const onSubmit = handleSubmit((values) => {
               @change="onSelectFile"
             />
           </AppInputGroup>
-          <Button type="submit" :disabled="isPending" class="w-full mb-5">Crear</Button>
+          <template v-if="props.logoUrl">
+            <img :src="`${imageCdn}/${props.logoUrl}`" alt="Logo" class="mb-5" />
+          </template>
+          <Button type="submit" :disabled="isPending" class="w-full mb-5">Actualizar</Button>
           <GeneralErrors :generalErrors="generalErrors" />
         </form>
       </template>

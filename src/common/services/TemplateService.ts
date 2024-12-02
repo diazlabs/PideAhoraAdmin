@@ -6,7 +6,6 @@ import type {
   CreateTemplateRequest,
   CreateTemplateResponse,
   TemplateById,
-  Templates,
   UpdateTemplateRequest,
   UpdateTemplateResponse
 } from '../types/template.interface'
@@ -27,7 +26,7 @@ export default class TemplateService {
       }
 
       const response = await AxiosInstance.post<ApiResponse<CreateTemplateResponse>>(
-        `/admin/templates/${template.tenantId}`,
+        `/templates/${template.tenantId}`,
         request
       )
 
@@ -50,7 +49,7 @@ export default class TemplateService {
       if (logo) request.append('logo', logo)
 
       const response = await AxiosInstance.put<ApiResponse<UpdateTemplateResponse>>(
-        `/admin/tenants/${template.tenantId}/${template.tenantTemplateId}`,
+        `/templates/${template.tenantId}/${template.tenantTemplateId}`,
         request
       )
 
@@ -63,7 +62,7 @@ export default class TemplateService {
   static async Delete(tenantId: string, tenantTemplateId: string) {
     try {
       const response = await AxiosInstance.delete<ApiResponse<object>>(
-        `/admin/tenants/${tenantId}/${tenantTemplateId}`
+        `/templates/${tenantId}/${tenantTemplateId}`
       )
 
       return response.data
@@ -78,7 +77,7 @@ export default class TemplateService {
   ): Promise<ApiResponse<TemplateById>> {
     try {
       const response = await AxiosInstance.get<ApiResponse<TemplateById>>(
-        `/admin/tenants/${tenantId}/${tenantTemplateId}`
+        `/templates/${tenantId}/${tenantTemplateId}`
       )
 
       return response.data
@@ -87,9 +86,11 @@ export default class TemplateService {
     }
   }
 
-  static async GetAll(tenantId: string) {
+  static async GetAll(tenantId: string): Promise<ApiResponse<TemplateById[]>> {
     try {
-      const response = await AxiosInstance.get<ApiResponse<Templates>>(`/admin/tenants/${tenantId}`)
+      const response = await AxiosInstance.get<ApiResponse<TemplateById[]>>(
+        `/templates/${tenantId}`
+      )
 
       return response.data
     } catch (error) {

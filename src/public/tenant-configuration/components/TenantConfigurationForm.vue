@@ -99,7 +99,9 @@ const onSubmit = handleSubmit((values) => {
       <template #content>
         <form @submit.prevent="onSubmit">
           <div v-for="(type, index) in configTypes" :key="index">
-            <h1>{{ type.label }}</h1>
+            <h1 class="text-md font-semibold mb-2 text-center">
+              Configuraciones de {{ type.label }}
+            </h1>
             <template v-for="(config, configIndex) in props.configs">
               <template v-if="config.configType === type.type">
                 <AppInputGroup

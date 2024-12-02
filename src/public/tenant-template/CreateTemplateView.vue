@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import TenantService from '@/common/services/TenantService'
 import router from '@/router'
 import { useQuery } from '@tanstack/vue-query'
 import { useRoute } from 'vue-router'
+import TenantService from '@/common/services/TenantService'
+import CreateTemplateForm from './components/CreateTemplateForm.vue'
 
 const route = useRoute()
 
@@ -13,17 +14,15 @@ if (!tenantId || tenantId.length < 35) {
 }
 
 const tenantQuery = useQuery({
-  queryKey: ['tenant-get-by-id', tenantId],
+  queryKey: ['tenant-by-id', tenantId],
   queryFn: () => TenantService.GetById(tenantId),
   refetchOnWindowFocus: false
 })
-
-const { data: tenantData } = tenantQuery
 </script>
 
 <template>
-  <template v-if="tenantQuery.isSuccess && tenantData?.data">
-    <CreateTemplateForm :tenant-id="tenantId" />
+  <template v-if="tenantQuery.isSuccess && tenantQuery.data.value?.data">
+    <CreateTemplateForm :tenant-id="tenantId" :tenant-name="tenantQuery.data.value.data.name" />
   </template>
   <template v-if="tenantQuery.isError || !tenantQuery.isFetching">
     <div class="flex items-center justify-center">

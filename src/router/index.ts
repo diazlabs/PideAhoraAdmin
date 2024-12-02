@@ -5,6 +5,7 @@ import ForgotPasswordView from '@/public/auth/ForgotPasswordView.vue'
 import { createRouter, createWebHistory } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
 import NotFoundView from '@/public/NotFoundView.vue'
+import templateRoutes from './templateRoutes'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -29,6 +30,29 @@ const router = createRouter({
       path: '/sections',
       name: 'sections',
       component: () => import('../public/AboutView.vue'),
+      meta: {
+        requiresAuth: true
+      }
+    },
+    ...templateRoutes,
+    {
+      path: '/:tenantId/templates/update/:tenantTemplateId',
+      component: () => import('../public/tenant-template/UpdateTemplateView.vue'),
+      meta: {
+        requiresAuth: true
+      }
+    },
+    {
+      path: '/templates/:tenantId',
+      name: 'templates',
+      component: () => import('../public/tenant-template/TemplatesView.vue'),
+      meta: {
+        requiresAuth: true
+      }
+    },
+    {
+      path: '/templates/:tenantId/create-template',
+      component: () => import('../public/tenant-template/CreateTemplateView.vue'),
       meta: {
         requiresAuth: true
       }

@@ -9,7 +9,7 @@ export default {
       { 'overflow-hidden': props.scrollable }
     ]
   }),
-  navContent: ({ instance }) => ({
+  navContent: () => ({
     class: [
       // Overflow and Scrolling
       'overflow-y-hidden overscroll-contain',

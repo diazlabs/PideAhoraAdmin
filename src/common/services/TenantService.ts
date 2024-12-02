@@ -3,8 +3,6 @@ import handleHttpError from './HandleHttpError'
 
 import type { ApiResponse } from '../types/api.interface'
 import type {
-  CreateTenantRequest,
-  CreateTenantResponse,
   TenantById,
   TenantCategory,
   Tenants,
@@ -13,28 +11,6 @@ import type {
 } from '../types/tenant.interface'
 
 export default class TenantService {
-  static async Create(tenant: CreateTenantRequest): Promise<ApiResponse<CreateTenantResponse>> {
-    try {
-      const request = new FormData()
-
-      request.append('name', tenant.name)
-      request.append('pageTitle', tenant.pageTitle)
-      request.append('path', tenant.path)
-      request.append('description', tenant.description)
-      request.append('category', tenant.category)
-      request.append('logo', tenant.logo)
-
-      const response = await AxiosInstance.post<ApiResponse<CreateTenantResponse>>(
-        '/admin/tenants',
-        request
-      )
-
-      return response.data
-    } catch (error) {
-      return handleHttpError(error)
-    }
-  }
-
   static async Update(tenant: UpdateTenantRequest): Promise<ApiResponse<UpdateTenantResponse>> {
     try {
       const request = new FormData()
@@ -48,7 +24,7 @@ export default class TenantService {
       if (tenant.logo) request.append('logo', tenant.logo)
 
       const response = await AxiosInstance.put<ApiResponse<UpdateTenantResponse>>(
-        `/admin/tenants/${tenant.tenantId}`,
+        `/tenants/${tenant.tenantId}`,
         request
       )
 
@@ -60,7 +36,7 @@ export default class TenantService {
 
   static async Delete(tenantId: string) {
     try {
-      const response = await AxiosInstance.delete<ApiResponse<object>>(`/admin/tenants/${tenantId}`)
+      const response = await AxiosInstance.delete<ApiResponse<object>>(`/tenants/${tenantId}`)
 
       return response.data
     } catch (error) {
@@ -70,9 +46,7 @@ export default class TenantService {
 
   static async GetById(tenantId: string): Promise<ApiResponse<TenantById>> {
     try {
-      const response = await AxiosInstance.get<ApiResponse<TenantById>>(
-        `/admin/tenants/${tenantId}`
-      )
+      const response = await AxiosInstance.get<ApiResponse<TenantById>>(`/tenants/${tenantId}`)
 
       return response.data
     } catch (error) {
@@ -82,7 +56,7 @@ export default class TenantService {
 
   static async GetAll(): Promise<ApiResponse<Tenants[]>> {
     try {
-      const response = await AxiosInstance.get<ApiResponse<Tenants[]>>(`/admin/tenants/`)
+      const response = await AxiosInstance.get<ApiResponse<Tenants[]>>(`/tenants/`)
 
       return response.data
     } catch (error) {
