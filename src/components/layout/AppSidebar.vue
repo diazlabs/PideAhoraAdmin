@@ -33,19 +33,19 @@ const createItems = () => {
       },
       {
         label: 'Productos',
-        url: `/products/${tenant.tenantId}`
+        url: `/tenant/${tenant.tenantId}/products`
       },
       {
         label: 'Templates',
-        url: `/templates/${tenant.tenantId}`
+        url: `/tenant/${tenant.tenantId}/templates`
       },
       {
         label: 'Configuraciones',
-        url: `/configs/${tenant.tenantId}`
+        url: `/tenant/${tenant.tenantId}/configs`
       },
       {
         label: 'Ordenes',
-        url: `/orders/${tenant.tenantId}`
+        url: `/tenant/${tenant.tenantId}/orders`
       }
     ]
   }))

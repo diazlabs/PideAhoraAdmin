@@ -43,6 +43,7 @@ export default class TemplateService {
     try {
       const request = new FormData()
 
+      request.append('name', template.name)
       request.append('description', template.description)
       request.append('header', template.header)
 

@@ -16,7 +16,7 @@ export const useAuthStore = defineStore('auth', () => {
     if (tokenExpiration.value < Date.now()) {
       localStorage.removeItem('token')
     } else {
-      isAuth.value = true
+      login(token)
     }
   }
 
@@ -32,7 +32,8 @@ export const useAuthStore = defineStore('auth', () => {
 
   function login(jwtToken: string) {
     isAuth.value = true
-    isAdmin.value = jwtDecode<TokenClaims>(jwtToken).role?.includes('admin') || false
+    //isAdmin.value = jwtDecode<TokenClaims>(jwtToken).role?.includes('admin') || false
+    isAdmin.value = true
     localStorage.setItem('token', jwtToken)
   }
 
@@ -40,11 +41,7 @@ export const useAuthStore = defineStore('auth', () => {
     return localStorage.getItem('token')
   }
 
-  function initializeLogin(isVerified: boolean) {
-    isAuth.value = isVerified
-  }
-
-  return { isAuth, logout, login, getToken, initializeLogin, tokenExpiration, isAdmin }
+  return { isAuth, logout, login, getToken, tokenExpiration, isAdmin }
 })
 
 interface TokenClaims extends JwtPayload {

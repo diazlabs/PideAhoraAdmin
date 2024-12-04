@@ -5,6 +5,7 @@ import { useToast } from 'primevue/usetoast'
 import { imageCdn } from '@/common/constants/cdn'
 import type { TemplateById } from '@/common/types/template.interface'
 import TemplateService from '@/common/services/TemplateService'
+import { useAuthStore } from '@/stores/auth'
 
 const props = defineProps<{
   templates: TemplateById[]
@@ -14,6 +15,7 @@ const props = defineProps<{
 
 const confirm = useConfirm()
 const toast = useToast()
+const { isAdmin } = useAuthStore()
 
 const deleteMutation = useMutation({
   mutationFn: (templateId: string) => TemplateService.Delete(props.tenantId, templateId),
@@ -81,7 +83,7 @@ const deleteConfirmation = (templateId: string, event: any) => {
             <Button
               as="router-link"
               target="_blank"
-              :to="`/templates/${tenantId}/create-template`"
+              :to="`/tenant/${tenantId}/create-template`"
               icon="pi pi-plus-circle"
               rounded
               raised
@@ -104,15 +106,26 @@ const deleteConfirmation = (templateId: string, event: any) => {
       <Column field="productId" header="Acciones">
         <template #body="slotProps">
           <div class="flex gap-3">
+            <template v-if="isAdmin">
+              <Button
+                as="router-link"
+                target="_blank"
+                v-tooltip="'Crear seccion'"
+                :to="`/tenant/${tenantId}/templates/${slotProps.data.tenantTemplateId}/create-section`"
+                icon="pi pi-plus"
+              />
+            </template>
             <Button
               as="router-link"
               target="_blank"
-              :to="`/${tenantId}/templates/update/${slotProps.data.tenantTemplateId}`"
+              v-tooltip="'Editar template'"
+              :to="`/tenant/${tenantId}/templates/${slotProps.data.tenantTemplateId}/update`"
               icon="pi pi-pencil"
             />
             <Button
               @click="($event: any) => deleteConfirmation(slotProps.data.tenantTemplateId, $event)"
               type="button"
+              v-tooltip="'Eliminar template'"
               severity="danger"
               icon="pi pi-trash"
             />

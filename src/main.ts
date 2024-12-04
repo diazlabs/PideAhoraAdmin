@@ -10,6 +10,7 @@ import 'primeicons/primeicons.css'
 import App from './App.vue'
 import router from './router'
 import { VueQueryPlugin } from '@tanstack/vue-query'
+import Tooltip from 'primevue/tooltip'
 
 const app = createApp(App)
 app.use(PrimeVue, {
@@ -18,6 +19,7 @@ app.use(PrimeVue, {
 })
 app.use(ToastService)
 app.use(ConfirmationService)
+app.directive('tooltip', Tooltip)
 
 app.use(createPinia())
 app.use(VueQueryPlugin)

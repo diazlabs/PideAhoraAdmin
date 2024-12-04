@@ -82,7 +82,7 @@ const deleteConfirmation = (productId: number, event: any) => {
             <Button
               as="router-link"
               target="_blank"
-              :to="`/products/${tenantId}/create-product`"
+              :to="`/tenant/${tenantId}/products/create-product`"
               icon="pi pi-plus-circle"
               rounded
               raised
@@ -113,7 +113,7 @@ const deleteConfirmation = (productId: number, event: any) => {
             <Button
               as="router-link"
               target="_blank"
-              :to="`/products/${tenantId}/${slotProps.data.productId}`"
+              :to="`/tenant/${tenantId}/products/${slotProps.data.productId}/update`"
               icon="pi pi-pencil"
             />
             <Button

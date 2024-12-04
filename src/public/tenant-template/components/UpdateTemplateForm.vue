@@ -27,15 +27,15 @@ const props = defineProps<Props>()
 
 const validationSchema = toTypedSchema(
   zod.object({
-    header: zod
-      .string()
-      .max(30, { message: 'El nombre del template no puede ser mayor a 30 caracteres' }),
     name: zod
-      .string()
+      .string({ message: 'Debes ingresar el nombre del template, te ayudara a identifcarlo' })
+      .max(30, { message: 'El nombre del template no puede ser mayor a 30 caracteres' }),
+    header: zod
+      .string({ message: 'Debes ingresar el header de la pagina' })
       .max(30, { message: 'El nombre del template no puede ser mayor a 30 caracteres' }),
     description: zod
-      .string()
-      .max(200, { message: 'La descripción no puede ser mayor a 200 caracteres' }),
+      .string({ message: 'Debes ingresar la description' })
+      .max(100, { message: 'La descripción no puede ser mayor a 200 caracteres' }),
     logo: zod
       .any()
       .optional()
@@ -54,7 +54,6 @@ const { handleSubmit, setErrors, defineField } = useForm({
   validationSchema,
   initialValues: { ...props }
 })
-
 const [logo] = defineField('logo')
 
 const generalErrors = ref<GeneralErrorsType>(null)

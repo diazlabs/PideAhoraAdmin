@@ -132,7 +132,7 @@ const onSubmit = handleSubmit((values) => {
             @click="
               () =>
                 router.push({
-                  path: `/configs/${props.tenantId}/create`
+                  path: `/admin/tenant/${props.tenantId}/configs/create`
                 })
             "
             >Crear configuracion</Button

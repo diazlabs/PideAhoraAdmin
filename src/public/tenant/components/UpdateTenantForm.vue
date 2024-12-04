@@ -162,7 +162,7 @@ const onSubmit = handleSubmit((values) => {
           class="w-full"
           severity="secondary"
           label="Crear template"
-          :to="`/tenant/template/create?tenantId={{ props.tenantId }}`"
+          :to="`/tenant/${props.tenantId}/create-template`"
         />
       </template>
     </Card>

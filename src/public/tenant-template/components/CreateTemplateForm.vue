@@ -64,7 +64,7 @@ const { isPending, mutate: createTemplate } = useMutation({
   onSuccess(response) {
     if (response.ok) {
       router.push({
-        path: `/templates/${props.tenantId}`
+        path: `/tenant/${props.tenantId}/templates`
       })
 
       toast.add({
