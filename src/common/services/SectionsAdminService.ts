@@ -8,7 +8,7 @@ export default class SectionAdminService {
   static async Create(section: CreateSectionRequest): Promise<ApiResponse<CreateSectionResponse>> {
     try {
       const response = await AxiosInstance.post<ApiResponse<CreateSectionResponse>>(
-        `/sections/${section.tenantId}`,
+        `/admin/sections/${section.tenantId}`,
         section
       )
 

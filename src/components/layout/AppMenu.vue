@@ -41,7 +41,7 @@ const items: MenuItem[] = [
       </svg> -->
     </template>
     <template #item="{ item, props, hasSubmenu, root }">
-      <a v-if="!authStore.isAdmin" v-ripple class="flex items-center" v-bind="props.action">
+      <a v-if="authStore.isAdmin" v-ripple class="flex items-center" v-bind="props.action">
         <span :class="item.icon" />
         <template v-if="item.url">
           <RouterLink :to="item.url" :class="item.icon ? 'ml-2' : ''">{{ item.label }}</RouterLink>

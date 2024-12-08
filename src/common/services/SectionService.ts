@@ -3,6 +3,7 @@ import handleHttpError from './HandleHttpError'
 
 import type { ApiResponse } from '../types/api.interface'
 import type {
+  SectionById,
   Sections,
   UpdateSectionRequest,
   UpdateSectionResponse
@@ -34,17 +35,21 @@ export default class SectionService {
     }
   }
 
-  /*   static async GetById(tenantId: string, tenantTemplateId: string) {
+  static async GetById(
+    tenantId: string,
+    tenantTemplateId: string,
+    templateSectionId: number
+  ): Promise<ApiResponse<SectionById>> {
     try {
-      const response = await AxiosInstance.get<ApiResponse<TemplateById>>(
-        `/sections/${tenantId}/${tenantTemplateId}`
+      const response = await AxiosInstance.get<ApiResponse<SectionById>>(
+        `/sections/${tenantId}/${tenantTemplateId}/${templateSectionId}`
       )
 
       return response.data
     } catch (error) {
       return handleHttpError(error)
     }
-  } */
+  }
 
   static async GetAll(tenantId: string) {
     try {

@@ -111,7 +111,7 @@ const deleteConfirmation = (templateId: string, event: any) => {
                 as="router-link"
                 target="_blank"
                 v-tooltip="'Crear seccion'"
-                :to="`/tenant/${tenantId}/templates/${slotProps.data.tenantTemplateId}/create-section`"
+                :to="`/admin/tenant/${tenantId}/templates/${slotProps.data.tenantTemplateId}/create-section`"
                 icon="pi pi-plus"
               />
             </template>

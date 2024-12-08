@@ -8,6 +8,7 @@ import productRoutes from './productRoutes'
 import tenantRoutes from './tenantRoutes'
 import authRoutes from './authRoutes'
 import orderRoutes from './orderRoutes'
+import sectionRoutes from './sectionRoutes'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -22,6 +23,7 @@ const router = createRouter({
     },
     ...tenantRoutes,
     ...templateRoutes,
+    ...sectionRoutes,
     ...productRoutes,
     ...authRoutes,
     ...orderRoutes,

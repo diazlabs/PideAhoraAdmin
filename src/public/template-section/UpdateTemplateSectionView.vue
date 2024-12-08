@@ -1,0 +1,50 @@
+<script setup lang="ts">
+import { useRoute } from 'vue-router'
+
+import router from '@/router'
+import UpdateTemplateSectionForm from './components/UpdateTemplateSectionForm.vue'
+import SectionService from '../../common/services/SectionService'
+import { useQuery } from '@tanstack/vue-query'
+
+const route = useRoute()
+
+const tenantId = route.params.tenantId as string
+const tenantTemplateId = route.params.tenantTemplateId as string
+const sectionId = Number(route.params.sectionId as string)
+
+if (!tenantId || tenantId.length < 35) {
+  router.push({ path: '/not-found' })
+}
+
+if (!tenantTemplateId || tenantTemplateId.length < 35) {
+  router.push({ path: '/not-found' })
+}
+
+if (!sectionId || sectionId < 1) {
+  router.push({ path: '/not-found' })
+}
+
+const sectionQuery = useQuery({
+  queryKey: ['section', tenantId],
+  queryFn: () => SectionService.GetById(tenantId, tenantTemplateId, sectionId),
+  refetchOnWindowFocus: false
+})
+</script>
+
+<template>
+  <template v-if="sectionQuery.isSuccess && sectionQuery?.data.value?.data">
+    <UpdateTemplateSectionForm
+      :tenant-id="tenantId"
+      :tenant-template-id="tenantTemplateId"
+      :section="sectionQuery.data.value.data"
+    />
+  </template>
+  <template v-if="sectionQuery.isError || !sectionQuery.isFetching">
+    <div class="flex items-center justify-center">
+      <p>{{ sectionQuery.error?.value }}</p>
+    </div>
+  </template>
+  <template v-else>
+    <AppLoader />
+  </template>
+</template>
