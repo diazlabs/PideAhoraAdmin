@@ -5,6 +5,7 @@ import router from '@/router'
 import UpdateTemplateSectionForm from './components/UpdateTemplateSectionForm.vue'
 import SectionService from '../../common/services/SectionService'
 import { useQuery } from '@tanstack/vue-query'
+import ProductService from '@/common/services/ProductService'
 
 const route = useRoute()
 
@@ -25,18 +26,32 @@ if (!templateSectionId || templateSectionId < 1) {
 }
 
 const sectionQuery = useQuery({
-  queryKey: ['section', tenantId],
+  queryKey: ['section', templateSectionId],
   queryFn: () => SectionService.GetById(tenantId, tenantTemplateId, templateSectionId),
+  refetchOnWindowFocus: false
+})
+
+const productsQuery = useQuery({
+  queryKey: ['section', tenantId],
+  queryFn: () => ProductService.GetAll(tenantId),
   refetchOnWindowFocus: false
 })
 </script>
 
 <template>
-  <template v-if="sectionQuery.isSuccess && sectionQuery?.data.value?.data">
+  <template
+    v-if="
+      sectionQuery.isSuccess &&
+      sectionQuery?.data.value?.data &&
+      productsQuery.isSuccess &&
+      productsQuery.data.value?.data
+    "
+  >
     <UpdateTemplateSectionForm
       :tenant-id="tenantId"
       :tenant-template-id="tenantTemplateId"
       :section="sectionQuery.data.value.data"
+      :products="productsQuery.data.value.data"
     />
   </template>
   <template v-if="sectionQuery.isError || !sectionQuery.isFetching">

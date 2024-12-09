@@ -24,10 +24,8 @@ export interface UpdateSectionRequest {
   tenantId: string
   templateSectionId: number
   tenantTemplateId: string
-  sectionVariantId: number
   sectionName: string
   sectionDescription: string
-  order: number
   visible: boolean
   products: UpdateSectionProductsDto[]
   configs: UpdateSectionConfigurationsDto[]
@@ -40,7 +38,6 @@ interface UpdateSectionProductsDto {
 
 interface UpdateSectionConfigurationsDto {
   sectionConfigId: number
-  configName: string
   configValue: string
 }
 
@@ -60,6 +57,7 @@ export interface SectionById {
   templateSectionId: number
   sectionDescription: string
   sectionName: string
+  visible: boolean
   products: SectionProduct[]
   configurations: SectionConfiguration[]
 }
@@ -73,7 +71,7 @@ interface SectionProduct {
 }
 
 interface SectionConfiguration {
-  sectionConfigId: string
+  sectionConfigId: number
   sectionConfigName: string
   sectionConfigValue: string
 }
