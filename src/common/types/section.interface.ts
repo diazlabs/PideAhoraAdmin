@@ -81,3 +81,9 @@ interface SectionConfiguration {
 export interface Sections {
   sections: Section[]
 }
+
+export interface DeleteSectionRequest {
+  tenantTemplateId: string
+  templateSectionId: number
+  tenantId: string
+}

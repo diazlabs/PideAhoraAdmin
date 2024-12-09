@@ -7,5 +7,12 @@ export default [
     meta: {
       requiresAuth: true
     }
+  },
+  {
+    path: '/tenant/:tenantId/templates/:tenantTemplateId/:templateSectionId/update',
+    component: () => import('@/public/template-section/UpdateTemplateSectionView.vue'),
+    meta: {
+      requiresAuth: true
+    }
   }
 ] as Readonly<RouteRecordRaw[]>

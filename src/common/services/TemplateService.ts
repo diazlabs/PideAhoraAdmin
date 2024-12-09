@@ -3,6 +3,7 @@ import handleHttpError from './HandleHttpError'
 
 import type { ApiResponse } from '../types/api.interface'
 import type {
+  ArrangeOrder,
   CreateTemplateRequest,
   CreateTemplateResponse,
   TemplateById,
@@ -51,6 +52,19 @@ export default class TemplateService {
 
       const response = await AxiosInstance.put<ApiResponse<UpdateTemplateResponse>>(
         `/templates/${template.tenantId}/${template.tenantTemplateId}`,
+        request
+      )
+
+      return response.data
+    } catch (error) {
+      return handleHttpError(error)
+    }
+  }
+
+  static async ArrangeSectionOrder(request: ArrangeOrder): Promise<ApiResponse<object>> {
+    try {
+      const response = await AxiosInstance.put<ApiResponse<object>>(
+        `/templates/${request.tenantId}/${request.tenantTemplateId}/arrange-order`,
         request
       )
 

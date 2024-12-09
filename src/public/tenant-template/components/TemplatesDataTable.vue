@@ -6,6 +6,8 @@ import { imageCdn } from '@/common/constants/cdn'
 import type { TemplateById } from '@/common/types/template.interface'
 import TemplateService from '@/common/services/TemplateService'
 import { useAuthStore } from '@/stores/auth'
+import { ref } from 'vue'
+import TemplateSectionsDataTable from './TemplateSectionsDataTable.vue'
 
 const props = defineProps<{
   templates: TemplateById[]
@@ -16,6 +18,18 @@ const props = defineProps<{
 const confirm = useConfirm()
 const toast = useToast()
 const { isAdmin } = useAuthStore()
+
+const expandedRows = ref<Record<string, boolean>>({})
+
+const expandAll = () => {
+  expandedRows.value = props.templates.reduce(
+    (acc, p) => (acc[p.tenantTemplateId] = true) && acc,
+    {} as Record<string, boolean>
+  )
+}
+const collapseAll = () => {
+  expandedRows.value = {}
+}
 
 const deleteMutation = useMutation({
   mutationFn: (templateId: string) => TemplateService.Delete(props.tenantId, templateId),
@@ -74,7 +88,19 @@ const deleteConfirmation = (templateId: string, event: any) => {
 
 <template>
   <div class="card p-6">
-    <DataTable :value="templates" tableStyle="min-width: 50rem">
+    <DataTable
+      v-model:expandedRows="expandedRows"
+      size="small"
+      paginator
+      removableSort
+      sortMode="multiple"
+      :rows="5"
+      :rowsPerPageOptions="[5, 10, 20, 50]"
+      stripedRows
+      tableStyle="min-width: 50rem"
+      dataKey="tenantTemplateId"
+      :value="templates"
+    >
       <template #header>
         <div class="flex flex-wrap items-center justify-between gap-2">
           <span class="text-xl font-bold">Templates</span>
@@ -83,14 +109,17 @@ const deleteConfirmation = (templateId: string, event: any) => {
             <Button
               as="router-link"
               target="_blank"
-              :to="`/tenant/${tenantId}/create-template`"
+              :to="`/admin/tenant/${tenantId}/create-template`"
               icon="pi pi-plus-circle"
               rounded
               raised
             />
+            <Button text icon="pi pi-plus" label="Expand All" @click="expandAll" />
+            <Button text icon="pi pi-minus" label="Collapse All" @click="collapseAll" />
           </div>
         </div>
       </template>
+      <Column expander style="width: 5rem" />
       <Column field="name" header="Nombre"></Column>
       <Column header="Logo">
         <template #body="slotProps">
@@ -133,6 +162,9 @@ const deleteConfirmation = (templateId: string, event: any) => {
         </template>
       </Column>
       <template #footer> En total hay {{ templates ? templates.length : 0 }} templates. </template>
+      <template #expansion="slotProps">
+        <TemplateSectionsDataTable :sections="slotProps.data.sections" :tenantId="props.tenantId" />
+      </template>
     </DataTable>
   </div>
 </template>

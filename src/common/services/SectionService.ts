@@ -3,6 +3,7 @@ import handleHttpError from './HandleHttpError'
 
 import type { ApiResponse } from '../types/api.interface'
 import type {
+  DeleteSectionRequest,
   SectionById,
   Sections,
   UpdateSectionRequest,
@@ -23,7 +24,11 @@ export default class SectionService {
     }
   }
 
-  static async Delete(tenantId: string, tenantTemplateId: string, templateSectionId: string) {
+  static async Delete({
+    templateSectionId,
+    tenantId,
+    tenantTemplateId
+  }: DeleteSectionRequest): Promise<ApiResponse<object>> {
     try {
       const response = await AxiosInstance.delete<ApiResponse<object>>(
         `/sections/${tenantId}/${tenantTemplateId}?templateSectionId=${templateSectionId}`

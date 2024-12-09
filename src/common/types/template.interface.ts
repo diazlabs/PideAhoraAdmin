@@ -19,6 +19,17 @@ export interface UpdateTemplateRequest {
 
 export interface UpdateTemplateResponse {}
 
+export interface ArrangeOrder {
+  tenantId: string
+  tenantTemplateId: string
+  sections: ArrangeOrderSection[]
+}
+
+interface ArrangeOrderSection {
+  templateSectionId: number
+  order: number
+}
+
 export interface TemplateById {
   tenantId: string
   tenantTemplateId: string
@@ -26,4 +37,13 @@ export interface TemplateById {
   header: string
   description: string
   logo: string
+  sections: TempalteSectionDto[]
+}
+
+export interface TempalteSectionDto {
+  tenantTemplateId: string
+  order: number
+  templateSectionId: number
+  sectionName: string
+  sectionDescription: string
 }

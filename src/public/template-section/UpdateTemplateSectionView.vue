@@ -10,7 +10,7 @@ const route = useRoute()
 
 const tenantId = route.params.tenantId as string
 const tenantTemplateId = route.params.tenantTemplateId as string
-const sectionId = Number(route.params.sectionId as string)
+const templateSectionId = Number(route.params.templateSectionId as string)
 
 if (!tenantId || tenantId.length < 35) {
   router.push({ path: '/not-found' })
@@ -20,13 +20,13 @@ if (!tenantTemplateId || tenantTemplateId.length < 35) {
   router.push({ path: '/not-found' })
 }
 
-if (!sectionId || sectionId < 1) {
+if (!templateSectionId || templateSectionId < 1) {
   router.push({ path: '/not-found' })
 }
 
 const sectionQuery = useQuery({
   queryKey: ['section', tenantId],
-  queryFn: () => SectionService.GetById(tenantId, tenantTemplateId, sectionId),
+  queryFn: () => SectionService.GetById(tenantId, tenantTemplateId, templateSectionId),
   refetchOnWindowFocus: false
 })
 </script>
